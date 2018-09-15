@@ -216,6 +216,8 @@ var Promise = require('bluebird');
                         return ++count;
                     });
 
+
+
             }, 0)
             //.then(console.log.bind(console, 'all done'));
                 .then(function () {
