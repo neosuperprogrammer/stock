@@ -45,7 +45,7 @@ var Promise = require('bluebird');
                 //console.log(charsetMatch);
                 iconv2 = new Iconv(charsetMatch.encoding, 'UTF8');
                 var utf8String = iconv2.convert(body).toString();
-                //console.log(utf8String);
+                // console.log(utf8String);
                 var loaded = cheerio.load(utf8String);
                 resolve(loaded);
             });
@@ -100,6 +100,7 @@ var Promise = require('bluebird');
 
     function parseCompanyList(loaded) {
         var list = loaded('tr >  td.st2');
+        // console.log('list : ' + list);
         var up = 0,
             down = 0,
             same = 0;
@@ -168,9 +169,9 @@ var Promise = require('bluebird');
     function parseCompanyInfo(loaded) {
         var list = loaded('td > span#MData\\[62\\]lastTick\\[6\\]');
         var totalString = list[0].children[0].children[0].data;
-        console.log(totalString);
+        // console.log(totalString);
         var total = parseFloat(totalString.replace(/,/g, ''));
-        console.log(total);
+        // console.log(total);
         return total;
     };
 
@@ -188,15 +189,15 @@ var Promise = require('bluebird');
                 uri: 'http://vip.mk.co.kr/newSt/price/price.php?stCode=005930&MSid=&msPortfolioID='
             };
             var sum = 0,
-            //stop = companyList.length;
-                stop = 3;
+            stop = companyList.length;
+                // stop = 3;
 
             promiseFor(function (count) {
                 return count < stop;
             }, function (count) {
                 var companyInfo = companyList[count];
                 requestOption.uri = 'http://vip.mk.co.kr/newSt/price/price.php?stCode=' + companyInfo.code + '&MSid=&msPortfolioID=';
-                console.log('request');
+                // console.log('request');
                 return getUrlContents(requestOption)
                 //.then(function (loaded) {
                 //    return ++count;
@@ -208,6 +209,7 @@ var Promise = require('bluebird');
                     .then(function (total) {
                         //companyList[count].total = total;
                         companyInfo.total = total;
+                        console.log('-');
                         return waitFor(100);
                     })
                     .then(function () {
@@ -341,7 +343,7 @@ var Promise = require('bluebird');
             //printStatus(loaded);
         })
         .then(function (companyList) {
-            //console.log(companyList);
+            // console.log(companyList);
             return getCompanyInfo(companyList);
         })
         .then(function (companyList) {
