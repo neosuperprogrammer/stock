@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>RememberIt</title>
+    <link rel="stylesheet" href="/vendors/css/normalize.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" integrity="sha384-3AB7yXWz4OeoZcPbieVW64vVXEwADiYyAEhwilzWsLw+9FgqpyjjStpPnpBO8o8S" crossorigin="anonymous">    <style>
+
+    <!--<link rel="stylesheet" href="/css/list.css">-->
+    <style>
+        . {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        [class*="col-"] {
+            width: 100%;
+            float: left;
+            padding: 0px;
+        }
+        @media only screen and (min-width: 600px) {
+            /* For tablets: */
+            .col-s-1 {width: 8.33%;}
+            .col-s-2 {width: 16.66%;}
+            .col-s-3 {width: 25%;}
+            .col-s-4 {width: 33.33%;}
+            .col-s-5 {width: 41.66%;}
+            .col-s-6 {width: 50%;}
+            .col-s-7 {width: 58.33%;}
+            .col-s-8 {width: 66.66%;}
+            .col-s-9 {width: 75%;}
+            .col-s-10 {width: 83.33%;}
+            .col-s-11 {width: 91.66%;}
+            .col-s-12 {width: 100%;}
+        }
+        @media only screen and (min-width: 768px) {
+            /* For desktop: */
+            .col-1 {width: 8.33%;}
+            .col-2 {width: 16.66%;}
+            .col-3 {width: 25%;}
+            .col-4 {width: 33.33%;}
+            .col-5 {width: 41.66%;}
+            .col-6 {width: 50%;}
+            .col-7 {width: 58.33%;}
+            .col-8 {width: 66.66%;}
+            .col-9 {width: 75%;}
+            .col-10 {width: 83.33%;}
+            .col-11 {width: 91.66%;}
+            .col-12 {width: 100%;}
+        }
+    </style>
+    <style>
+        #wrapper {
+            overflow: hidden;
+            z-index: 1000;
+        }
+        #main-content {
+            /*background-color: yellow;*/
+        }
+        a { color: inherit; }
+        .card-container {
+            box-sizing: border-box;
+            height: 320px;
+            padding: 0;
+            position: relative;
+            /*background-color: yellow;*/
+        }
+
+        .card-close-btn {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            background-color: transparent;
+            background-repeat: no-repeat;
+            border: none;
+            cursor: pointer;
+            overflow: hidden;
+            outline: none;
+        }
+
+        .card-link {
+            position: absolute;
+            /*background-color: #3adb76;*/
+            right: 20px;
+            bottom: 0px;
+        }
+        .card-link a {
+            text-decoration: none;
+        }
+
+        .card {
+            border: 1px solid #73AD21;
+            border-radius: 25px;
+            padding: 0;
+            margin: 20px;
+            overflow: hidden;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            text-decoration: none;
+        }
+
+        .card-title {
+            display: block;
+            position: relative;
+            width: 100%;
+            height: 15%;
+            background-color: #73AD21;
+            font-size: 17px;
+            color: white;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .card-title-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+
+            transform: translate(-50%, -50%);
+        }
+        
+		.card-title-edit {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translate(0, -50%);
+    	}
+
+        .card-check-box {
+            position: absolute;
+            right:20px;
+            top : 10px;
+
+        }
+
+        .card-desc {
+            display: block;
+            position: relative;
+            background-color: #ffffff;
+            height: 60%;
+            width: 100%;
+            color: #87838a;
+        }
+
+        .card-desc-content {
+            padding: 10px;
+        }
+        
+		.card-desc-block {
+        	position: absolute;
+        	top : 0;
+        	left : 0;
+        	right: 0;
+        	bottom: 0;
+            background-color: #fefefe;
+        }
+        
+        .hidden {
+/*         	display : none; */
+        	opacity: 0;
+        }
+
+        .card-bottom-content {
+            position: relative;
+            bottom: 0;
+            height: 25%;
+            width: 100%;
+            background-color: #cccfcf;
+        }
+
+        .card-created {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+
+        }
+
+        .card-state-div {
+            position: absolute;
+            left:10px;
+            right:10px;
+            bottom: 0px;
+            height:60%;
+        }
+
+        .card-state-inner-div {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            /*background-color: #3adb76;*/
+        }
+
+        .card-state {
+            position: absolute;
+            left: 0px;
+            top: 10px;
+            /*background-color: #693fdb;*/
+        }
+
+        .card-check-div {
+            position: absolute;
+            right: 0px;
+            top: 10px;
+            width: 40%;
+            /*background-color: #693fdb;*/
+        }
+        .card-check-text {
+            /*background-color: #db2d33;*/
+            display: block;
+            position: absolute;
+            right: 20px;
+            top: 0px;
+
+        }
+        .card-check-box {
+            display: block;
+            position: absolute;
+            right: 0px;
+            bottom: 0px;
+            background-color: #d4db1f;
+            transform: translate(-10%, -60%);
+
+        }
+
+        .memorized {
+            opacity: .5;
+            pointer-events: none;
+        }
+
+
+    </style>
+    <style>
+        .loading-div {
+            box-sizing: border-box;
+            display: block;
+            position:relative;
+            height:100px;
+            width:100%;
+            /*background-color: red;*/
+            text-align: center;
+            vertical-align: center ;
+        }
+        .loading-text {
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+    <style>
+        /*.nav {*/
+        /*margin: 0;*/
+        /*height : 100px;*/
+        /*background-color: #3adb76;*/
+        /*}*/
+        .nav-ul {
+            /*position: fixed;*/
+            /*top:0;*/
+            /*width:100%;*/
+
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            background-color: #67b168;
+            overflow: hidden;
+            border:1px solid #447444;
+        }
+        .nav-ul li {
+            float: left;
+        }
+
+        .nav-ul li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        .nav-ul li a:hover {
+            color:black;
+            background-color: white;
+        }
+
+    </style>
+    <style>
+        #top-div {
+            position: fixed;
+            right:0;top:300px;background-color: #9d9da0;color: white;padding: 10px;
+        }
+    </style>
+    <script type="application/javascript" src="https://code.jquery.com/jquery-2.2.3.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.3/handlebars.min.js"></script>
+    <script>
+        var pageToRequest = 1;
+        var itemState = 1;
+        var requestEnd = 0;
+        var inRequest = 0;
+    </script>
+
+    <script>
+        Handlebars.registerHelper("getDate", function (created) {
+            var d = new Date(created);
+            var datestring = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + " " + d.getHours() + ":" + d.getMinutes();
+            return datestring;
+            // var html = "<ul>";
+            // html += "<li>" + datestring + "</li>";
+            // html += "</ul>";
+            // return html;
+        });
+        Handlebars.registerHelper("getStateTitle", function (id) {
+            if (itemState == 1) {
+                return "memorized";
+            } else {
+                return "forgot";
+            }
+        });
+        var getStateTitle = function (id) {
+
+            console.log("update item : " + id);
+            stopProp
+        }
+    </script>
+    <script id="card-template" type="text/template">
+            <div class="card-container col-3 col-s-6">
+
+                <!--<form style="display: inline-block;position: absolute;right:0px;"-->
+                <!--action="/items/{{id}}?_method=DELETE" method="POST">-->
+                <button class="card-close-btn" id="{{id}}">X</button>
+                <!--</form>-->
+
+
+                <div class="card">
+                    <div class="card-title">
+                        <div class="card-title-content">{{item}}</div>
+						<div class="card-title-edit" id={{id}}><i class="far fa-edit"></i></div>
+
+                    </div>
+
+                    <div class="card-desc">
+                        <div class="card-desc-content">
+                            {{item_desc}}
+                        </div>
+					<div class="card-desc-block">
+					</div>
+
+                    </div>
+
+                    <div class="card-bottom-content">
+                        <div class="card-created">
+                            date : {{getDate created}}
+                        </div>
+
+                        <div class="card-state-div">
+                            <div class="card-state-inner-div">
+                                <div class="card-state">
+                                    state : {{remember_state}}
+                                </div>
+
+                                <div class="card-check-div">
+                                    <div class="card-check-text">{{getStateTitle id}}</div>
+                                    <input id={{id}} class="card-check-box" type="checkbox">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-link">
+                    <a href="http://endic.naver.com/search.nhn?sLn=kr&searchOption=all&query={{item}}">Naver</a>
+                    <a href="https://translate.google.co.kr/#en/ko/{{item}}">Google</a>
+
+                </div>
+            </div>
+    </script>
+
+    <script>
+        $("document").ready(function () {
+
+            $('#top-div').click(function (evt) {
+                console.log("top");
+                $(window).scrollTop(0);
+            })
+
+            var raw_template = $('#card-template').html();
+            // Complile that into an handlebars template
+            var template = Handlebars.compile(raw_template);
+            // Retrieve the placeHolder where the posts will be displayed
+            var placeHolder = $('#content');
+
+            $.getJSON("/api/items/page/" + pageToRequest + "?state=" + itemState, {}, function (data) {
+                console.log(data);
+                pageToRequest++;
+                data.items.forEach(function (item) {
+                    var html = template(item);
+                    placeHolder.append(html);
+                });
+				$('.card-title-edit').click(function (evt) {
+					var urlToRequest = "/items/" + this.id;
+					console.log("location : " + urlToRequest);
+					window.location.href = urlToRequest;
+// 					window.location.replace(urlToRequest);
+                    evt.preventDefault();
+                    return false;
+                });
+				$('.card-desc-block').unbind('click');
+				$('.card-desc-block').click(function (evt) {
+					console.log(this);
+					$(this).toggleClass('hidden');
+                    evt.preventDefault();
+                    return false;
+                });
+                $(".card-update-button").click
+                (
+                    function (evt)
+                    {
+                        //YOUR CODE HERE
+                        // console.log(evt.target);
+                        var button = $(this);
+                        // $(this).text("hi");
+                        var urlToRequest = "/api/items/memorized/" + evt.target.id;
+                        if (itemState == 2) {
+                            var urlToRequest = "/api/items/forgot/" + evt.target.id;
+                        }
+                        $.ajax({
+                            url: urlToRequest,
+                            success: function (data) {
+                                console.log(data.result);
+                                if (data.result == "success") {
+                                    // console.log(button.parent());
+                                    button.parent().parent().parent().addClass("memorized");
+                                    // button.text('hi');
+                                }
+                            }
+                        });
+
+                        evt.preventDefault();
+                        return false;
+                    }
+                );
+                $('.card-close-btn').click(function (evt) {
+                    console.log(this);
+                    if (confirm('Delete?')) {
+                        var urlToRequest = "/items/" + evt.target.id + "?_method=DELETE";
+                        console.log("url " + urlToRequest);
+                        $.ajax({
+                            url: urlToRequest,
+                            success: function (data) {
+                                window.location.replace("/items");
+                            },
+                            data:{},
+                            type: 'POST'
+                        });
+
+                    } else {
+                    }
+                    evt.preventDefault();
+                    return false;
+                });
+                $('.card-check-box').change(function(evt) {
+                    // this will contain a reference to the checkbox
+                    if (this.checked) {
+                        console.log('checked');
+                        var button = $(this);
+                        var urlToRequest = "/api/items/memorized/" + evt.target.id;
+                        if (itemState == 2) {
+                            var urlToRequest = "/api/items/forgot/" + evt.target.id;
+                        }
+                        $.ajax({
+                            url: urlToRequest,
+                            success: function (data) {
+                                console.log(data.result);
+                                if (data.result == "success") {
+                                    // console.log(button.parent());
+                                    button.parent().parent().parent().parent().parent().addClass("memorized");
+                                    // button.text('hi');
+                                }
+                            }
+                        });
+
+                        evt.preventDefault();
+                        return false;
+
+                    } else {
+                        console.log('unchecked');
+                    }
+                });
+
+            });
+
+// 		   $.ajax({
+//            		<% var pageToRequest = parseInt(page) %>
+//               url: "/api/items/page/<%= pageToRequest %>",
+//               success: function (data) {
+//               	var items = data['items'];
+//               	$('body').append(items);
+//               },
+//               dataType: 'json'
+//            });
+        });
+    </script>
+
+    <script>
+        $(window).scroll(function () {
+            if ($(window).scrollTop() > $(document).height() - $(window).height() - 50) {
+                // console.log('request :' + requestEnd);
+                if (requestEnd == 1) {
+                    console.log('request ended');
+                    $('.loading-div').remove();
+
+                    return;
+                }
+
+                if (inRequest == 1) {
+                    return;
+                }
+                var raw_template = $('#card-template').html();
+                // Complile that into an handlebars template
+                var template = Handlebars.compile(raw_template);
+                // Retrieve the placeHolder where the posts will be displayed
+                var placeHolder = $('#content');
+                placeHolder.append("<div class='loading-div col-12'><div class='loading-text'><i class='fas fa-spinner fa-spin'></i></div></div>");
+                $(window).scrollTop($(document).height());
+                console.log("===============request");
+                inRequest = 1;
+                $.getJSON("/api/items/page/" + pageToRequest + "?state=" + itemState, {}, function (data) {
+                    inRequest = 0;
+                    console.log(data);
+                    pageToRequest++;
+                    console.log("length" + data.items.length);
+                    if (data.items.length == 0) {
+                        requestEnd = 1;
+                    }
+
+                    $('.loading-div').remove();
+                    data.items.forEach(function (item) {
+                        var html = template(item);
+                        placeHolder.append(html);
+                    });
+                    $('.card-desc-block').unbind('click');
+					$('.card-desc-block').click(function (evt) {
+						console.log(this);
+						$(this).toggleClass('hidden');
+						evt.preventDefault();
+						return false;
+					});
+
+					$('.card-title-edit').click(function (evt) {
+						var urlToRequest = "/items/" + this.id;
+						console.log("location : " + urlToRequest);
+						window.location.href = urlToRequest;
+	// 					window.location.replace(urlToRequest);
+						evt.preventDefault();
+						return false;
+					});
+
+                    $(".card-update-button").click
+                    (
+                        function (evt)
+                        {
+                            //YOUR CODE HERE
+                            // console.log(evt.target);
+                            var button = $(this);
+                            // $(this).text("hi");
+                            var urlToRequest = "/api/items/memorized/" + evt.target.id;
+                            if (itemState == 2) {
+                                var urlToRequest = "/api/items/forgot/" + evt.target.id;
+                            }
+                            $.ajax({
+                                url: urlToRequest,
+                                success: function (data) {
+                                    console.log(data.result);
+                                    if (data.result == "success") {
+                                        // console.log(button.parent());
+                                        button.parent().parent().parent().addClass("memorized");
+                                        // button.text('hi');
+                                    }
+                                }
+                            });
+
+                            evt.preventDefault();
+                            return false;
+                        }
+                    );
+                    $('.card-close-btn').click(function (evt) {
+                        console.log(this);
+                        if (confirm('Delete?')) {
+                            var urlToRequest = "/items/" + evt.target.id + "?_method=DELETE";
+                            console.log("url " + urlToRequest);
+                            $.ajax({
+                                url: urlToRequest,
+                                success: function (data) {
+                                    window.location.replace("/items");
+                                },
+                                data:{},
+                                type: 'POST'
+                            });
+
+                        } else {
+                        }
+                        evt.preventDefault();
+                        return false;
+                    });
+                    $('.card-check-box').change(function(evt) {
+                        // this will contain a reference to the checkbox
+                        if (this.checked) {
+                            console.log('checked');
+                            var button = $(this);
+                            var urlToRequest = "/api/items/memorized/" + evt.target.id;
+                            if (itemState == 2) {
+                                var urlToRequest = "/api/items/forgot/" + evt.target.id;
+                            }
+                            $.ajax({
+                                url: urlToRequest,
+                                success: function (data) {
+                                    console.log(data.result);
+                                    if (data.result == "success") {
+                                        // console.log(button.parent());
+                                        button.parent().parent().parent().parent().parent().addClass("memorized");
+                                        // button.text('hi');
+                                    }
+                                }
+                            });
+
+                            evt.preventDefault();
+                            return false;
+
+                        } else {
+                            console.log('unchecked');
+                        }
+                    });
+                });
+
+//
+            }
+        });
+    </script>
+
+
+</head>
+<body>
+
+<script>
+    var getTitle = function() {
+        if (itemState == 1) {
+            document.write("Items to memorize");
+        } else {
+            document.write("Items memorized");
+        }
+    }
+    var getUpdateTitle = function() {
+        if (itemState == 1) {
+            document.write("Move to memorized");
+        } else {
+            document.write("Move to memorizes");
+        }
+    }
+    var updateContent = function(evt) {
+        if (itemState == 1) {
+            itemState = 2;
+        } else {
+            itemState = 1;
+        }
+        pageToRequest = 1;
+
+        $('#main-title').text(itemState == 1 ? "Items to memorize" : "Items memorized");
+        $('#update-content-button').text(itemState == 1 ? "Move to memorized" : "Move to memorize");
+        var placeHolder = $('#content');
+        placeHolder.empty();
+        var raw_template = $('#card-template').html();
+        // Complile that into an handlebars template
+        var template = Handlebars.compile(raw_template);
+        // Retrieve the placeHolder where the posts will be displayed
+		requestEnd = 0;
+        $.getJSON("/api/items/page/" + pageToRequest + "?state=" + itemState, {}, function (data) {
+            console.log(data);
+            pageToRequest++;
+            data.items.forEach(function (item) {
+                var html = template(item);
+                placeHolder.append(html);
+            });
+            $('.card-desc-block').unbind('click');
+			$('.card-desc-block').click(function (evt) {
+				console.log(this);
+				$(this).toggleClass('hidden');
+				evt.preventDefault();
+				return false;
+			});
+			$('.card-title-edit').click(function (evt) {
+				var urlToRequest = "/items/" + this.id;
+				console.log("location : " + urlToRequest);
+				window.location.href = urlToRequest;
+// 					window.location.replace(urlToRequest);
+				evt.preventDefault();
+				return false;
+			});
+            $(".card-update-button").click
+            (
+                function (evt)
+                {
+                    //YOUR CODE HERE
+                    // console.log(evt.target);
+                    var button = $(this);
+                    // $(this).text("hi");
+                    var urlToRequest = "/api/items/memorized/" + evt.target.id;
+                    if (itemState == 2) {
+                        var urlToRequest = "/api/items/forgot/" + evt.target.id;
+                    }
+                    $.ajax({
+                        url: urlToRequest,
+                        success: function (data) {
+                            console.log(data.result);
+                            if (data.result == "success") {
+                                // console.log(button.parent());
+                                button.parent().parent().parent().addClass("memorized");
+                                // button.text('hi');
+                            }
+                        }
+                    });
+
+                    evt.preventDefault();
+                    return false;
+                }
+            );
+            $('.card-close-btn').click(function (evt) {
+                console.log(this);
+                if (confirm('Delete?')) {
+                    var urlToRequest = "/items/" + evt.target.id + "?_method=DELETE";
+                    console.log("url " + urlToRequest);
+                    $.ajax({
+                        url: urlToRequest,
+                        success: function (data) {
+                            window.location.replace("/items");
+                        },
+                        data:{},
+                        type: 'POST'
+                    });
+
+                } else {
+                }
+                evt.preventDefault();
+                return false;
+            });
+            $('.card-check-box').change(function(evt) {
+                // this will contain a reference to the checkbox
+                if (this.checked) {
+                    console.log('checked');
+                    var button = $(this);
+                    var urlToRequest = "/api/items/memorized/" + evt.target.id;
+                    if (itemState == 2) {
+                        var urlToRequest = "/api/items/forgot/" + evt.target.id;
+                    }
+                    $.ajax({
+                        url: urlToRequest,
+                        success: function (data) {
+                            console.log(data.result);
+                            if (data.result == "success") {
+                                // console.log(button.parent());
+                                button.parent().parent().parent().parent().parent().addClass("memorized");
+                                // button.text('hi');
+                            }
+                        }
+                    });
+
+                    evt.preventDefault();
+                    return false;
+
+                } else {
+                    console.log('unchecked');
+                }
+            });
+        });
+
+
+    }
+
+</script>
+
+<div id="wrapper">
+    <div class="nav">
+        <ul class="nav-ul">
+            <li><a href="/">&Xi; HOME</a></li>
+            <li style="float: right;"><a href="/LogOut">Logout</a></li>
+            <li style="float: right;"><a href="/items/new">New</a></li>
+        </ul>
+    </div>
+
+    <div id="main-content" style="overflow: hidden;">
+        <h1 id="main-title" style="text-align: center"><script>getTitle()</script></h1>
+        <button id="update-content-button" onclick="updateContent()"><script>getUpdateTitle()</script></button>
+
+        <div id="content" style="display: block;float: left;width: 100%">
+        </div>
+    </div>
+    <div id="top-div">
+        TOP
+    </div>
+</div>
+
+</body>
+</html>

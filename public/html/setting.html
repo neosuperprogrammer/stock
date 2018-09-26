@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>RememberIt</title>
+    <link rel="stylesheet" href="/public/vendors/css/normalize.css">
+    <link rel="icon" type="image/png" href="/public/favicon.png">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css"
+          integrity="sha384-3AB7yXWz4OeoZcPbieVW64vVXEwADiYyAEhwilzWsLw+9FgqpyjjStpPnpBO8o8S" crossorigin="anonymous">
+
+    <script type="application/javascript" src="https://code.jquery.com/jquery-2.2.3.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.3/handlebars.min.js"></script>
+    <script type="application/javascript" src="/public/script/list.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        [class*="col-"] {
+            width: 100%;
+            float: left;
+            padding: 0px;
+        }
+        @media only screen and (min-width: 600px) {
+            /* For tablets: */
+            .col-s-1 {width: 8.33%;}
+            .col-s-2 {width: 16.66%;}
+            .col-s-3 {width: 25%;}
+            .col-s-4 {width: 33.33%;}
+            .col-s-5 {width: 41.66%;}
+            .col-s-6 {width: 50%;}
+            .col-s-7 {width: 58.33%;}
+            .col-s-8 {width: 66.66%;}
+            .col-s-9 {width: 75%;}
+            .col-s-10 {width: 83.33%;}
+            .col-s-11 {width: 91.66%;}
+            .col-s-12 {width: 100%;}
+        }
+        @media only screen and (min-width: 768px) {
+            /* For desktop: */
+            .col-1 {width: 8.33%;}
+            .col-2 {width: 16.66%;}
+            .col-3 {width: 25%;}
+            .col-4 {width: 33.33%;}
+            .col-5 {width: 41.66%;}
+            .col-6 {width: 50%;}
+            .col-7 {width: 58.33%;}
+            .col-8 {width: 66.66%;}
+            .col-9 {width: 75%;}
+            .col-10 {width: 83.33%;}
+            .col-11 {width: 91.66%;}
+            .col-12 {width: 100%;}
+        }
+    </style>
+    <script id="item-template" type="text/template">
+        <div>
+            <div id="setting_list" style="width: 200px;padding: 0; height: 100%;float: left">
+                <div style="float: left;">
+                    {{title}} :
+                </div>
+                <div style="float:right;">
+                    {{count}}
+                </div>
+            </div>
+            <div style="float: right">
+                <a href="#" style="text-decoration: none; color: white; padding-right: 10px;">X</a>
+            </div>
+        </div>
+    </script>
+
+    <script>
+        function confirmDelete(state) {
+            if (confirm('Delete?')) {
+                showLoading();
+                $.getJSON("/api/setting/items/delete/" + state, {}, function (data) {
+                    hideLoading();
+                    console.log('state : ' + data.state);
+                    location.reload();
+                });
+            }
+        }
+        function loadElementaryEnglish(level) {
+            if (confirm('Add?')) {
+                showLoading();
+                $.getJSON("/api/setting/elementary/" + level, {}, function (data) {
+                    hideLoading();
+                    console.log('level : ' + data.level);
+                    location.reload();
+                });
+            }
+        }
+        function showLoading() {
+            $('#loading').show();
+        }
+        function hideLoading() {
+            $('#loading').hide();
+        }
+
+        $("document").ready(function () {
+            showLoading();
+            $.getJSON("/api/setting/items/", {}, function (data) {
+                hideLoading();
+                var state_1_count = data.state_1_count;
+                var state_2_count = data.state_2_count;
+                var state_3_count = data.state_3_count;
+                var state_4_count = data.state_4_count;
+                var state_5_count = data.state_5_count;
+                var state_999_count = data.state_999_count;
+                var state_total = data.state_total;
+                console.log("result : " + data.result);
+                console.log("state_1_count : " + state_1_count);
+                console.log("state_2_count : " + state_2_count);
+                console.log("state_3_count : " + state_3_count);
+                console.log("state_4_count : " + state_4_count);
+                console.log("state_5_count : " + state_5_count);
+                console.log("state_999_count : " + state_999_count);
+                console.log("state_total : " + state_total);
+                // $('#item_state_total').html('<i class="fas fa-arrow-right"></i> Total : ' + state_total);
+                // $('#item_state_1').html('<div>Newly Added : ' + state_1_count);
+                // $('#item_state_2').html('1\'st Turn : ' + state_2_count);
+                // $('#item_state_3').html('2\'nd Turn : ' + state_3_count);
+                // $('#item_state_4').html('3\'rd Turn : ' + state_4_count);
+                // $('#item_state_5').html('Long-Term Memory : ' + state_5_count);
+
+                var raw_template = $('#item-template').html();
+                var template = Handlebars.compile(raw_template);
+
+                var html = template({title : 'Total', 'count' : state_total});
+                var element = $(html);
+                var placeHolder = $('#item_state_total');
+                placeHolder.append(element);
+
+                $('a', element).click(function (evt) {
+                    evt.preventDefault();
+                    confirmDelete(0);
+                    // if (confirm('Delete?')) {
+                    //     $.getJSON("/api/setting/items/delete/0", {}, function (data) {
+                    //
+                    //     });
+                    //         // var urlToRequest = "/items/" + evt.target.id + "?_method=DELETE";
+                    //     // console.log("url " + urlToRequest);
+                    //     // $.ajax({
+                    //     //     url: urlToRequest,
+                    //     //     success: function (data) {
+                    //     //         // window.location.replace("/items");
+                    //     //         // requestItems();
+                    //     //         updateContent();
+                    //     //     },
+                    //     //     data: {},
+                    //     //     type: 'POST'
+                    //     // });
+                    // } else {
+                    //
+                    // }
+                });
+
+                html = template({title : 'Newly Added', 'count' : state_1_count});
+                element = $(html);
+                placeHolder = $('#item_state_1');
+                placeHolder.append(element);
+
+                $('a', element).click(function (evt) {
+                    evt.preventDefault();
+                    confirmDelete(1);
+                });
+
+                $('#setting_list', element).click(function (evt) {
+                    console.log('click');
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                    setState(1);
+                    window.location.replace('/');
+
+                });
+
+                html = template({title : '1\'st Turn', 'count' : state_2_count});
+                element = $(html);
+                placeHolder = $('#item_state_2');
+                placeHolder.append(element);
+
+                $('a', element).click(function (evt) {
+                    evt.preventDefault();
+                    confirmDelete(2);
+                });
+
+                $('#setting_list', element).click(function (evt) {
+                    console.log('click');
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                    setState(2);
+                    window.location.replace('/');
+
+                });
+
+
+                html = template({title : '2\'nd Turn', 'count' : state_3_count});
+                element = $(html);
+                placeHolder = $('#item_state_3');
+                placeHolder.append(element);
+
+                $('a', element).click(function (evt) {
+                    evt.preventDefault();
+                    confirmDelete(3);
+                });
+                $('#setting_list', element).click(function (evt) {
+                    console.log('click');
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                    setState(3);
+                    window.location.replace('/');
+
+                });
+
+
+                html = template({title : '3\'rd Turn', 'count' : state_4_count});
+                element = $(html);
+                placeHolder = $('#item_state_4');
+                placeHolder.append(element);
+
+                $('a', element).click(function (evt) {
+                    evt.preventDefault();
+                    confirmDelete(4);
+                });
+                $('#setting_list', element).click(function (evt) {
+                    console.log('click');
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                    setState(4);
+                    window.location.replace('/');
+
+                });
+
+
+                html = template({title : 'Long-Term Memory', 'count' : state_5_count});
+                element = $(html);
+                placeHolder = $('#item_state_5');
+                placeHolder.append(element);
+
+                $('a', element).click(function (evt) {
+                    evt.preventDefault();
+                    confirmDelete(5);
+                });
+
+                $('#setting_list', element).click(function (evt) {
+                    console.log('click');
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                    setState(5);
+                    window.location.replace('/');
+
+                });
+
+
+
+                html = template({title : 'Jargonal', 'count' : state_999_count});
+                element = $(html);
+                placeHolder = $('#item_state_999');
+                placeHolder.append(element);
+
+                $('a', element).click(function (evt) {
+                    evt.preventDefault();
+                    confirmDelete(999);
+                });
+
+                $('#setting_list', element).click(function (evt) {
+                    console.log('click');
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                    setState(999);
+                    window.location.replace('/');
+
+                });
+
+
+            });
+        });
+    </script>
+    <style>
+        #item_state {
+            padding: 0;
+            margin-top: 50px;
+            background-color: yellow;
+        }
+        .item_state {
+            padding: 0;
+        }
+        .item_state {
+            padding: 10px 10px;
+            color: white;
+            background-color: #67b168;
+            width: 100%;
+            height: 50px;
+            border: 1px solid #4e9b71;
+
+        }
+        .item_state_main {
+            background-color: #71c272;
+            width: 100%;
+            height: 50px;
+            border: 1px solid #4e9b71;
+
+        }
+        .item_state_sub {
+            background-color: #6ac21f;
+            width: 100%;
+            height: 40px;
+            border: 1px solid #4e9b71;
+
+        }
+
+    </style>
+    <style>
+        #loading {
+            display: none;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        #loader_div {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        .loader {
+            border: 16px solid #f3f3f3; /* Light grey */
+            border-top: 16px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 2s linear infinite;
+            position: absolute;
+            /*background-color: yellow;*/
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <style>
+        .nav-ul {
+            position: fixed;
+            top:0;
+            width:100%;
+            z-index: 999;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            background-color: #67b168;
+            /*overflow: hidden;*/
+            border:1px solid #447444;
+        }
+        .nav-ul li {
+            float: left;
+        }
+
+        .nav-ul li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        .nav-ul li a:hover {
+            color:black;
+            background-color: white;
+        }
+
+        /* The dropdown container */
+        .dropdown {
+            float: left;
+            overflow: hidden;
+        }
+
+        /* Dropdown button */
+        .dropdown .dropbtn {
+            font-size: 16px;
+            border: none;
+            outline: none;
+            color: white;
+            padding: 14px 16px;
+            background-color: inherit;
+            font-family: inherit; /* Important for vertical align on mobile phones */
+            margin: 0; /* Important for vertical align on mobile phones */
+        }
+
+        /* Add a red background color to navbar links on hover */
+        .navbar a:hover, .dropbtn {
+            color:black;
+            background-color: white;
+        }
+
+    </style>
+    <script>
+        // function gotoHome() {
+        //     setState(1);
+        //     window.location.replace('/');
+        // }
+        $(document).on('click', 'a[href="#home"]', function(e){
+            e.preventDefault();
+            e.stopPropagation();
+//             setState(1);
+            // window.history.back();
+            // setDirty(1);
+            // window.history.back();
+
+            window.location.replace('/');
+
+        });
+
+        $(document).on('click', 'a[href="#logout"]', function(e){
+            e.preventDefault();
+            e.stopPropagation();
+             setState(1);
+            // window.history.back();
+            $.getJSON("/api/logout", {}, function (data) {
+                // setDirty(1);
+                // window.history.back();
+                window.location.replace('/');
+            });
+
+
+
+        });
+
+    </script>
+
+</head>
+<body>
+<div class="nav">
+    <ul class="nav-ul">
+        <li><a href="#home">&Xi; HOME</a></li>
+        <li style="float: right;"><a href="/LogOut"><i class="fas fa-sign-out-alt"></i></a></li>
+        <!--<li style="float: right;"><a href="#logout"><i class="fas fa-sign-out-alt"></i></a></li>-->
+
+    </ul>
+</div>
+
+
+<div id="item_state">
+    <div id="item_state_total" class="item_state item_state_main">
+    </div>
+    <div id="item_state_1" class="item_state item_state_sub">
+    </div>
+    <div id="item_state_2" class="item_state item_state_sub">
+    </div>
+    <div id="item_state_3" class="item_state item_state_sub">
+    </div>
+    <div id="item_state_4" class="item_state item_state_sub">
+    </div>
+    <div id="item_state_5" class="item_state item_state_sub">
+    </div>
+    <div id="item_state_999" class="item_state item_state_sub">
+    </div>
+
+</div>
+
+<div id="elementary_english">
+    <div class="item_state item_state_main">
+        초등영어단어
+    </div>
+    <div id="elementary_english_state_1" class="item_state item_state_sub" style="cursor:pointer">
+        1단계 추가
+    </div>
+    <div id="elementary_english_state_2" class="item_state item_state_sub" style="cursor:pointer">
+        2단계 추가
+    </div>
+    <div id="elementary_english_state_3" class="item_state item_state_sub" style="cursor:pointer">
+        3단계 추가
+    </div>
+    <div id="elementary_english_state_4" class="item_state item_state_sub" style="cursor:pointer">
+        4단계 추가
+    </div>
+    <div id="elementary_english_state_5" class="item_state item_state_sub" style="cursor:pointer">
+        5단계 추가
+    </div>
+</div>
+
+
+<div id="loading">
+    <div id="loader_div">
+        <div class="loader"></div>
+    </div>
+</div>
+
+<script>
+    $('#elementary_english_state_1').click(function (ev) {
+        ev.preventDefault();
+        // console.log('1');
+        loadElementaryEnglish(1);
+    });
+    $('#elementary_english_state_2').click(function (ev) {
+        ev.preventDefault();
+        loadElementaryEnglish(2);
+    });
+    $('#elementary_english_state_3').click(function (ev) {
+        ev.preventDefault();
+        loadElementaryEnglish(3);
+    });
+    $('#elementary_english_state_4').click(function (ev) {
+        ev.preventDefault();
+        loadElementaryEnglish(4);
+    });
+    $('#elementary_english_state_5').click(function (ev) {
+        ev.preventDefault();
+        loadElementaryEnglish(5);
+    });
+
+</script>
+
+
+</body>
+</html>

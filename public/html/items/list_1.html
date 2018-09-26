@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>RememberIt</title>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" integrity="sha384-3AB7yXWz4OeoZcPbieVW64vVXEwADiYyAEhwilzWsLw+9FgqpyjjStpPnpBO8o8S" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/public/vendors/css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="/public/css/grid.css">
+    <link rel="stylesheet" type="text/css" href="/public/css/card.css">
+    <link rel="stylesheet" type="text/css" href="/public/css/list.css">
+    <script type="application/javascript" src="https://code.jquery.com/jquery-2.2.3.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.3/handlebars.min.js"></script>
+    <script type="application/javascript" src="/public/script/list.js"></script>
+    
+    <script id="card-template" type="text/template">
+            <div class="card-container col-3 col-s-6">
+                <button class="card-close-btn" id="{{id}}">X</button>
+                <div class="card">
+                    <div class="card-title">
+                        <div class="card-title-content">{{item}}</div>
+						<div class="card-title-edit" id={{id}}><i class="far fa-edit"></i></div>
+                    </div>
+                    <div class="card-desc">
+                        <div class="card-desc-content">
+                            {{item_desc}}
+                        </div>
+					<div class="card-desc-block">
+					</div>
+                    </div>
+                    <div class="card-bottom-content">
+                        <div class="card-created">
+                            date : {{getDate created}}
+                        </div>
+                        <div class="card-state-div">
+                            <div class="card-state-inner-div">
+                                <div class="card-state">
+                                    state : {{remember_state}}
+                                </div>
+                                <div class="card-check-div">
+                                    <div class="card-check-text">{{getStateTitle id}}</div>
+                                    <input id={{id}} class="card-check-box" type="checkbox">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-link">
+                    <a href="http://endic.naver.com/search.nhn?sLn=kr&searchOption=all&query={{item}}">Naver</a>
+                    <a href="https://translate.google.co.kr/#en/ko/{{item}}">Google</a>
+                </div>
+            </div>
+    </script>
+
+
+    <script>
+        $("document").ready(function () {
+            $('#top-div').click(function (evt) {
+                console.log("top");
+                $(window).scrollTop(0);
+            })
+			requestItems();
+        });
+    </script>
+
+    <script>
+        $(window).scroll(function () {
+            if ($(window).scrollTop() > $(document).height() - $(window).height() - 50) {
+				requestItems();
+            }
+        });
+    </script>
+</head>
+<body>
+	<div id="wrapper">
+		<div class="nav">
+			<ul class="nav-ul">
+				<li><a href="/">&Xi; HOME</a></li>
+				<li style="float: right;"><a href="/LogOut">Logout</a></li>
+				<li style="float: right;"><a href="/items/new">New</a></li>
+			</ul>
+		</div>
+
+		<div id="main-content" style="overflow: hidden;">
+			<h1 id="main-title" style="text-align: center"><script>getTitle()</script></h1>
+			<button id="update-content-button" onclick="updateContent()"><script>getUpdateTitle()</script></button>
+
+			<div id="content" style="display: block;float: left;width: 100%">
+			</div>
+		</div>
+		<div id="top-div">
+			TOP
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+
+
+/* clearfix */
+/**
+ * For modern browsers
+ * 1. The space content is one way to avoid an Opera bug when the
+ *    contenteditable attribute is included anywhere else in the document.
+ *    Otherwise it causes space to appear at the top and bottom of elements
+ *    that are clearfixed.
+ * 2. The use of `table` rather than `block` is only necessary if using
+ *    `:before` to contain the top-margins of child elements.
+ */
+.clearfix:before,
+.clearfix:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+
+.clearfix:after {
+    clear: both;
+}
+
+/**
+ * For IE 6/7 only
+ * Include this rule to trigger hasLayout and contain floats.
+ */
+.clearfix {
+    *zoom: 1;
+}
+
+/* fonts */
+
+@font-face {
+    font-family: 'ambleregular';
+    src: url('../../vendors/fonts/Amble-Regular-webfont.eot');
+    src: url('../../vendors/fonts/Amble-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../../vendors/fonts/Amble-Regular-webfont.woff') format('woff'),
+         url('../../vendors/fonts/Amble-Regular-webfont.ttf') format('truetype'),
+         url('../../vendors/fonts/Amble-Regular-webfont.svg#ambleregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: ambleregular;
+}
+
+.profile img {
+    border-radius: 50%;
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+    
+    transition: filter 800ms;
+    transition: -webkit-filter 800ms ease;
+    -webkit-transition: -webkit-filter 800ms ease;
+}
+
+.profile img:hover {
+    -webkit-filter: grayscale(0);
+    filter: grayscale(0);
+}
+
+
+
+

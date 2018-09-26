@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>RememberIt</title>
+    <link rel="stylesheet" href="/public/vendors/css/normalize.css">
+    <link rel="icon" type="image/png" href="/public/favicon.png">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css"
+          integrity="sha384-3AB7yXWz4OeoZcPbieVW64vVXEwADiYyAEhwilzWsLw+9FgqpyjjStpPnpBO8o8S" crossorigin="anonymous">
+
+    <script type="application/javascript" src="https://code.jquery.com/jquery-2.2.3.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.3/handlebars.min.js"></script>
+
+    <!--<link rel="stylesheet" href="/public/resources/css/main.css">-->
+    <script type="application/javascript" src="/public/script/list.js"></script>
+
+
+
+    <script id="item-template" type="text/template">
+        <div class="row">
+            <div class="item">
+                {{item}}
+            </div>
+            <div class="item_desc">
+                {{{item_desc}}}
+            </div>
+        </div>
+    </script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        [class*="col-"] {
+            width: 100%;
+            float: left;
+            padding: 0px;
+        }
+        @media only screen and (min-width: 600px) {
+            /* For tablets: */
+            .col-s-1 {width: 8.33%;}
+            .col-s-2 {width: 16.66%;}
+            .col-s-3 {width: 25%;}
+            .col-s-4 {width: 33.33%;}
+            .col-s-5 {width: 41.66%;}
+            .col-s-6 {width: 50%;}
+            .col-s-7 {width: 58.33%;}
+            .col-s-8 {width: 66.66%;}
+            .col-s-9 {width: 75%;}
+            .col-s-10 {width: 83.33%;}
+            .col-s-11 {width: 91.66%;}
+            .col-s-12 {width: 100%;}
+        }
+        @media only screen and (min-width: 768px) {
+            /* For desktop: */
+            .col-1 {width: 8.33%;}
+            .col-2 {width: 16.66%;}
+            .col-3 {width: 25%;}
+            .col-4 {width: 33.33%;}
+            .col-5 {width: 41.66%;}
+            .col-6 {width: 50%;}
+            .col-7 {width: 58.33%;}
+            .col-8 {width: 66.66%;}
+            .col-9 {width: 75%;}
+            .col-10 {width: 83.33%;}
+            .col-11 {width: 91.66%;}
+            .col-12 {width: 100%;}
+        }
+    </style>
+    <style>
+        @import 'https://fonts.googleapis.com/css?family=Open+Sans';
+        @import 'https://fonts.googleapis.com/css?family=Pacifico';
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        /* Sign Up Form */
+
+        .wrapper .container {
+            background-color: slategray;
+            border-radius: 10px;
+            padding-top: 50px;
+            width: 100%;
+            max-width: 460px;
+            margin: 40px auto;
+        }
+
+        .wrapper .container .form-title{
+            margin-bottom: 50px;
+            text-align: center;
+            font-family: 'Pacifico', sans-serif;
+            font-size: 2em;
+            color: white;
+        }
+
+        .wrapper .container form {
+            text-align: center;
+        }
+
+        .wrapper .container .form-input {
+            padding: 0 20px;
+        }
+
+        .wrapper .container .form-input label {
+            color: white;
+        }
+
+        .wrapper .container .form-input .submit-button {
+            margin-bottom: 20px;
+            padding: 8px 10px;
+            border-radius: 5px;
+            background-color: #a0a0a0;
+            border: 1px solid #999;
+            box-shadow: 1px 1px 2px rgba(0,0,0,.2);
+            color: white;
+            font-weight: 500;
+            font-size: 1em;
+        }
+
+        .wrapper .container .form-input .submit-button:hover {
+            color: #eee;
+        }
+    </style>
+    <style>
+    </style>
+    <script>
+
+        function gotoNaverSearch() {
+            var searchItem = $('input[name="item"]').val();
+            console.log("item : "+  searchItem);
+            var url = "http://endic.naver.com/search.nhn?searchOption=all&query=" + searchItem;
+            window.location.href = url;
+        }
+    </script>
+    <style>
+        .form-input input {
+            width: 100%;
+            height: 40px;
+        }
+
+        .form-input textarea {
+            width: 100%;
+            height: 200px;
+        }
+        .container {
+            position: relative;
+        }
+        #hint_div {
+            box-sizing: border-box;
+            position: absolute;
+            top: 20px;
+            left:20px;
+            right:20px;
+            height: 300px;
+            background-color: white;
+            /*width:100%;*/
+            /*margin: 0 20px;*/
+            overflow: auto;
+
+            border: 1px solid #73AD21;
+            padding: 0;
+            text-decoration: none;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+
+
+        }
+        #hint_div .row {
+            position: relative;
+            /*background-color: #3adb76;*/
+            width: 100%;
+            height: 30px;
+            padding: 0;
+        }
+        #hint_div .row:hover{
+            background-color: #e1e5ee;
+        }
+
+        #hint_div .item {
+            position: absolute;
+            /*background-color: #8191db;*/
+            left: 10px;
+            width: 30%;
+            height: 100%;
+            color: #ff9c49;
+            font-size: 0.8em;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        #hint_div .item_desc {
+            position: absolute;
+            /*background-color: #8191db;*/
+            right: 0px;
+            width: 65%;
+            height: 100%;
+            font-size: 0.8em;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        .submit-button {
+            height: 40px;
+            padding: 0 20px;
+            width: 60px;
+            margin-top: 10px;
+        }
+        .card-link{
+            position: absolute;
+            text-align: center;
+            left: 50%;
+            transform: translate(30%, 0);
+            width: 130px;
+            right: 15px;
+            background-color: #8296a7;
+            text-decoration: none;
+            color: #e3e3e3;
+            border-radius: 5px;
+            padding: 10px 0 5px 0;
+            bottom: 20px;
+            height: 40px;
+            display: none;
+
+        }
+        .card-link:hover {
+            color: white;
+        }
+
+    </style>
+    <script>
+        $("document").ready(function () {
+            // var offset = $('#form_input_item').parent().offset().top;
+            var offset = $('#form_input_item').offset().top - 10;
+            $('#hint_div').css('top', offset);
+            $('#hint_div').hide();
+            $(window).on('click', function (evt) {
+
+                $('#hint_div').hide();
+            })
+
+        });
+    </script>
+
+</head>
+
+<body>
+<div class="wrapper">
+    <div class="container">
+        <div class="form-title">Add Item</div>
+        <!--<form action="/items" method="post">-->
+        <form id="myForm"  action="/items" method="POST">
+            <div class="form-input">
+                <label>Item
+                    <input id="form_input_item" type="text" name="item"  autocomplete="off"  style="text-transform: lowercase" >
+                </label>
+            </div>
+            <div class="form-input">
+                <label>Desc
+                    <textarea rows="4" cols="50" name="item_desc"></textarea>
+                </label>
+            </div>
+            <div class="form-input">
+                <a class="card-link" href="#" style="float:left;">Naver Search</a>
+                <button class="submit-button">Add</button>
+            </div>
+
+        </form>
+        <div id="hint_div">
+
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+    function GoBackWithRefresh(event) {
+        if ('referrer' in document) {
+            window.location = document.referrer;
+            /* OR */
+            //location.replace(document.referrer);
+        } else {
+            window.history.back();
+        }
+    }
+    $('.submit-button').click( function(evt) {
+        evt.preventDefault();
+        setState(1);
+        setSort(1);
+        $.ajax({
+            url: '/api/items',
+            type: 'post',
+            dataType: 'json',
+            data: $('form#myForm').serialize(),
+            success: function(data) {
+                console.log('success : ' + data);
+                // window.history.go(-2);
+                // window.location.reload(history.back());
+                // window.location.replace('/');
+                // window.location.href = document.referrer;
+                // window.location.replace(document.referrer)
+                // window.location.replace("/items");
+                // setDirty(1);
+                // window.history.back();
+
+                window.location.replace('/');
+
+//                 GoBackWithRefresh();
+//                 location.href = document.referrer
+            }
+        });
+    });
+    $(document).on('click', 'a[href="#"]', function(e){
+        e.preventDefault();
+        var searchItem = $('input[name="item"]').val();
+        console.log("item : "+  searchItem);
+        var url = "http://endic.naver.com/search.nhn?searchOption=all&query=" + searchItem;
+        window.location.href = url;
+
+    });
+    function isAlphaNumeric(str) {
+        var code, i, len;
+
+        for (i = 0, len = str.length; i < len; i++) {
+            code = str.charCodeAt(i);
+            if (!(code > 47 && code < 58) && // numeric (0-9)
+                !(code > 64 && code < 91) && // upper alpha (A-Z)
+                !(code > 96 && code < 123)) { // lower alpha (a-z)
+                return false;
+            }
+        }
+        return true;
+    };
+    var timeoutId  = null;
+    function requestDelayedHint() {
+        if (timeoutId != null) {
+            clearTimeout(timeoutId);
+            timeoutId = null;
+        }
+        timeoutId = setTimeout(function() {
+            requestHint();
+        }, 300);
+    }
+
+    function requestHint() {
+        timeoutId = null;
+        console.log('>>>>> request');
+        var searchItem = $('input[name="item"]').val();
+        console.log('key up : ' + searchItem);
+        $.ajax({
+            url: '/api/search/items/?word=' + searchItem,
+            type: 'get',
+            dataType: 'json',
+            success: function(data) {
+                // console.log('success : ' + data);
+                var result = data.data;
+                // console.log(result);
+                if (result.length > 0) {
+                    var offset = $('#form_input_item').offset().top - 10;
+                    $('#hint_div').css('top', offset);
+                    $('#hint_div').show();
+                    var raw_template = $('#item-template').html();
+                    var template = Handlebars.compile(raw_template);
+                    var placeHolder = $('#hint_div');
+                    placeHolder.empty();
+                    result.forEach(function (value) {
+                        // console.log(value);
+                        var html = template(value);
+                        var element = $(html);
+                        placeHolder.append(element);
+
+                        $(element).unbind('click');
+                        $(element).click(function (evt) {
+                            if (timeoutId != null) {
+                                clearTimeout(timeoutId);
+                                timeoutId = null;
+                            }
+
+                            evt.preventDefault();
+                            console.log(this);
+                            var item = $(this).children('.item').html().trim();
+                            var item_desc = $(this).children('.item_desc').html().trim();
+                            console.log('item : [' + item + ']');
+                            console.log('item_desc : ' + item_desc);
+                            if (!isAlphaNumeric(item) && isAlphaNumeric(item_desc)) {
+                                var temp = item_desc;
+                                item_desc = item;
+                                item = temp;
+                            }
+                            item_desc = item_desc.replace(/<b>/gi, "\n");
+                            item_desc = item_desc.replace(/<\/b>/gi, "");
+                            
+                            item_desc = item_desc.replace(/&lt;/gi, "<");
+                            item_desc = item_desc.replace(/&gt;/gi, ">");
+                            $('input[name="item"]').val(item.trim());
+                            $('textarea[name="item_desc"]').val(item_desc.trim());
+                            $('#hint_div').hide();
+                            evt.stopPropagation(); // This is the preferred method.
+                            return false;        // This should not be used unless you do not want
+                                                 // any click events registering inside the div
+                        });
+
+                    });
+
+                } else {
+                    $('#hint_div').hide();
+                }
+            },
+            fail: function (err) {
+                console.log('fail : ' + err);
+            }
+        });
+    }
+
+    $('#form_input_item').on('focus', function() {
+        console.log('>>>> focus');
+        // var n = $(document).height();
+        $('html, body').animate({ scrollTop: 150 }, 50);
+        requestDelayedHint();
+
+    });
+    $('#form_input_item').on('keyup', function() {
+        requestDelayedHint();
+
+    });
+
+</script>
+
+
+</body>
+</html>
