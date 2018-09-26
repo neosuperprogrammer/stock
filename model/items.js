@@ -178,6 +178,73 @@ var contents = {
         });
 
     },
+    save: function (companyInfo, done) {
+        return new Promise(function (resolve, reject) {
+            var newItem = {
+                type: companyInfo.type,
+                name: companyInfo.name,
+                code: companyInfo.code,
+                current: companyInfo.current,
+                // offset: companyInfo.offset,
+                mc: companyInfo.mc,
+                ls: companyInfo.ls,
+                per: companyInfo.per,
+                eps: companyInfo.eps,
+                bps: companyInfo.bps,
+                pbr: companyInfo.pbr,
+                debt: companyInfo.debt,
+                scf: companyInfo.scf
+            };
+            // console.log('newItem: ' + newItem);
+            //company.print();
+            //console.log(_.CompanyModel);
+            // company.save(function (err) {
+            //     console.log('save' + err);
+            //     resolve();
+            // });
+
+                //     mysql> create table if not exists company (
+//         id INT NOT NULL AUTO_INCREMENT,
+//         type varchar(64) NOT NULL,
+//         name varchar(255) NOT NULL,
+//         code varchar(64) NOT NULL,
+//         current INT default 0,
+//         mc INT default 0,
+//         ls INT default 0,
+//         per FLOAT default 0,
+//         eps INT default 0,
+//         bps INT default 0,
+//         pbr INT default 0,
+//         debt INT default 0,
+//         scf INT default 0,
+//         created timestamp DEFAULT CURRENT_TIMESTAMP,
+//         PRIMARY KEY(id)
+// ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            conn.query('insert into company set ?', newItem, function (err, result) {
+                if (err) {
+                    console.log(err);
+                    resolve();
+                } else {
+                    // console.log(result);
+                    resolve();
+                }
+            });
+        });
+    },
+
+    deleteAll: function (done) {
+        conn.query('DELETE from company', function (err, result) {
+            if (err) {
+                console.log(err);
+                done(err);
+            } else {
+                done(null);
+            }
+        });
+
+    },
+
+
     findById: function (item, done) {
         conn.query('select * from items where id = ?', [item], function (err, result) {
             if (err) {

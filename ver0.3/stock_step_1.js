@@ -13,6 +13,7 @@ var mongoose = require('mongoose');
 var stock_request = require('./stock_request');
 var common = require('./stock_common');
 var db = require('./stock_db');
+var Items       = require("../model/items");
 
 (function () {
 
@@ -58,16 +59,34 @@ var db = require('./stock_db');
             offset = offset.replace('▼', '-');
             currentValue = parseFloat(currentValue.replace(/,/g, ''));
 
-            companyList.push({
-                'type': type,
-                'name': companyName,
-                'code': companyCode,
-                'current': currentValue,
-                'offset': offset
-            });
+            if (currentValue > 10000
+            && !companyName.includes('선물')
+                && !companyName.includes('ETN')
+                && !companyName.includes('ARIRANG')
+                && !companyName.includes('TIGER')
+                && !companyName.includes('KBSTAR')
+                && !companyName.includes('KINDEX')
+                && !companyName.includes('KODEX')
+                && !companyName.includes('KOSEF')
+                && !companyName.includes('KRX')
+                && !companyName.includes('TREX')
+                && !companyName.includes('우B')
+                && !companyName.includes(' 우')
+                && !companyName.includes('마이티')
+                // && !companyName.endsWith('우')
+            ) {
+                companyList.push({
+                    'type': type,
+                    'name': companyName,
+                    'code': companyCode,
+                    'current': currentValue,
+                    'offset': offset
+                });
+            }
             //}
             //console.log(companyName + '(' + companyCode + ') : ' + currentValue + '(' + offsetValue + ')');
             //console.log(data);
+            // return companyList;
         });
         var sum = up + down + same;
         console.log('count : ' + list.length + ', up : ' + up + ', down : ' + down + ', same : ' + same + ', sum : '
@@ -229,17 +248,32 @@ var db = require('./stock_db');
         return getCompanyList('kosdaq', requestOption);
     }
 
-    function saveCompanyInfo(dbName, companyList) {
-        return db.openDB(dbName)
-            .then(function (dbConnection) {
-                return saveCompanyInfos(dbConnection, companyList);
-            })
-            .then(function (dbConnection) {
-                //console.log('db connection : ' + dbConnection);
-                return db.closeDB(dbConnection);
-            });
-    }
+    // function saveCompanyInfo(dbName, companyList) {
+    //     return db.openDB(dbName)
+    //         .then(function (dbConnection) {
+    //             return saveCompanyInfos(dbConnection, companyList);
+    //         })
+    //         .then(function (dbConnection) {
+    //             //console.log('db connection : ' + dbConnection);
+    //             return db.closeDB(dbConnection);
+    //         });
+    // }
 
+    function saveCompanyInfo(dbName, companyList) {
+        return new Promise(function (resolve, reject) {
+            Items.deleteAll(function (err) {
+                if (err) {
+                    reject();
+                } else {
+                    return Promise.all(companyList).each(function (companyInfo) {
+                        return Items.save(companyInfo);
+                        // return db.saveOrUpdate(companyInfo);
+                        //return db.saveCompanyInfo(companyInfo);
+                    });
+                }
+            });
+        });
+    }
 
     function saveKospiCompanyInfo(companyList) {
         //console.log(companyList);
@@ -258,8 +292,8 @@ var db = require('./stock_db');
     initialize()
         .then(getKospiCompanyList)
         .then(saveKospiCompanyInfo)
-        .then(getKosdaqCompanyList)
-        .then(saveKosdaqCompanyInfo)
+        // .then(getKosdaqCompanyList)
+        // .then(saveKosdaqCompanyInfo)
         .catch(function (err) {
             console.log(err);
         });
