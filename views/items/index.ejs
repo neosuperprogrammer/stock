@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>RememberIt</title>
+    <link rel="stylesheet" href="/vendors/css/normalize.css">
+    <link rel="stylesheet" href="/vendors/css/foundation.css">
+
+    <script type="application/javascript" src="https://code.jquery.com/jquery-2.2.3.js"></script>
+
+    <script>
+        $("document").ready(function() {
+        });
+    </script>
+    
+    <script>
+     $(window).scroll(function(){
+        if ($(window).scrollTop() == $(document).height()-$(window).height()){
+           $.ajax({
+           		<% var pageToRequest = parseInt(page) + 1 %>
+              url: "/items/page/<%= pageToRequest %>",
+              success: function (data) { $('body').append(data); },
+              dataType: 'html'
+           });
+        }
+    });
+    </script>
+
+</head>
+<body>
+
+<div class="wrapper">
+    <h1 style="text-align: center">items<%= page %></h1>
+
+    <div class="container">
+        <div style="margin-bottom: 20px;height:50px;position: relative;clear: both;">
+            <a href="/items/new" style="margin-right: 100px;position: absolute;right:0px;font-weight: 500;font-size: 1.2em">NEW</a>
+            <a href="/LogOut" style="margin-right: 10px;position: absolute;right:0px;font-weight: 500;font-size: 1.2em">Log Out</a>
+        </div>
+        <ul>
+            <% var index = 0; items.forEach(function(item){ %>
+            <li style="list-style: none;">
+                <a href="/items/<%= item.id %>">
+                    <div>
+                        <%= index + 1 %> )
+                        <%= item.item %>
+                        <form style="display: inline-block;position: absolute;right:0px;" action="/items/<%= item.id %>?_method=DELETE" method="POST">
+                            <button  style="color:red;float: right;margin-right: 10px;">DELETE</button>
+                        </form>
+                        <textarea rows="2" cols="50" name="item_desc"><%= item.item_desc %></textarea>
+                        <div>
+                            &nbsp;&nbsp;state : <%= item.remember_state %>
+                            <% var d = item.created;
+                                var datestring = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate() + " " + d.getHours() + ":" + d.getMinutes();
+                            %>
+                            &nbsp;&nbsp;date : <%= datestring %>
+
+
+                            <% var naverLink = "http://endic.naver.com/search.nhn?sLn=kr&searchOption=all&query=" +  item.item; %>
+                            <a href ="<%= naverLink %>" style="display: inline-block;position: absolute;right:100px;font-weight: 500;font-size: 1.2em";>Naver</a>
+                            <% var googleLink = "https://translate.google.co.kr/#en/ko/" +  item.item; %>
+                            <a href ="<%= googleLink %>" style="display: inline-block;position: absolute;right:10px;font-weight: 500;font-size: 1.2em";>Google</a>
+                        </div>
+                        <div style="height: 50px;"></div>
+
+
+                    </div>
+                </a>
+            </li>
+            <% index++ }); %>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>

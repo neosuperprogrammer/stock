@@ -85,7 +85,7 @@ var conn = mysql.createConnection({
     host: "localhost",
     user: "flowgrammer",
     password: "qwer1234",
-    database: "remember_it"
+    database: "stock"
 });
 
 conn.connect(function (err) {

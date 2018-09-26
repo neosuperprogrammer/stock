@@ -1,60 +1,75 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+var express         = require("express");
+var session         = require('express-session');
+var MySQLStore      = require('express-mysql-session')(session);
+//var mysql = require('mysql');
+var bodyParser      = require("body-parser");
+var methodOverride  = require("method-override");
+var flash           = require('connect-flash');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
+var app             = express();
 
-var app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+var options = {
+    host: 'localhost',
+    port: 3306,
+    user: 'flowgrammer',
+    password: 'qwer1234',
+    database: 'remember_it',
+    expiration: Date.now() + (365 * 86400 * 1000)
+};
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+        secret: '124124jlsjdlsjdl!@',
+        resave: true,
+        saveUninitialized: false,
+        store: new MySQLStore(options),
+        expires: new Date(Date.now() + (365 * 86400 * 1000)),
+        maxAge: 365 * 86400 * 1000,
+        cookie: {
+            expires: new Date(Date.now() + 365 * 86400 * 1000),
+            maxAge: 365 * 86400 * 1000
+        }
+    }
+));
 
-app.use('/', routes);
-app.use('/users', users);
+//var conn = mysql.createConnection({
+//  host: "localhost",
+//  user: "flowgrammer",
+//  password: "qwer1234",
+//  database: "remember_it"
+//
+//});
+//
+//conn.connect(function(err) {
+//  if (err) {
+//    console.error('error connecting: ' + err.stack);
+//    return;
+//  }
+//
+//  console.log('connected as id ' + conn.threadId);
+//});
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+app.set("view engine", "ejs");
+
+app.use(bodyParser.urlencoded({extended: true}));
+// app.use(express.static(__dirname + "/public"));
+app.use(express.static(__dirname + "/"));
+app.use(methodOverride("_method"));
+app.use(flash());
+
+var indexRoutes   = require("./routes/index");
+var itemsRoutes = require("./routes/items")
+var apiRoutes = require("./routes/api")
+
+app.use("/", indexRoutes);
+app.use("/items", itemsRoutes);
+app.use("/api", apiRoutes);
+
+var port = process.env.PORT || 3003;
+
+//app.listen(port, process.env.IP, function(){
+//  console.log("server started at http://localhost:" + port);
+//});
+app.listen(port, function(){
+    console.log("server started at http://localhost:" + port);
 });
-
-// error handlers
-
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
-    });
-  });
-}
-
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
-});
-
-
-module.exports = app;

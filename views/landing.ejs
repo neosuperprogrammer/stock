@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>RememberIt</title>
+    <link rel="stylesheet" href="/public/vendors/css/normalize.css">
+    <!--<link rel="stylesheet" href="/public/vendors/css/foundation.css">-->
+    <link rel="icon" type="image/png" href="/public/favicon.png">
+
+    <!--<link rel="stylesheet" href="/public/resources/css/landing.css">-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script type="application/javascript" src="https://code.jquery.com/jquery-2.2.3.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.3/handlebars.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        [class*="col-"] {
+            width: 100%;
+            float: left;
+            padding: 0px;
+        }
+        @media only screen and (min-width: 600px) {
+            /* For tablets: */
+            .col-s-1 {width: 8.33%;}
+            .col-s-2 {width: 16.66%;}
+            .col-s-3 {width: 25%;}
+            .col-s-4 {width: 33.33%;}
+            .col-s-5 {width: 41.66%;}
+            .col-s-6 {width: 50%;}
+            .col-s-7 {width: 58.33%;}
+            .col-s-8 {width: 66.66%;}
+            .col-s-9 {width: 75%;}
+            .col-s-10 {width: 83.33%;}
+            .col-s-11 {width: 91.66%;}
+            .col-s-12 {width: 100%;}
+        }
+        @media only screen and (min-width: 768px) {
+            /* For desktop: */
+            .col-1 {width: 8.33%;}
+            .col-2 {width: 16.66%;}
+            .col-3 {width: 25%;}
+            .col-4 {width: 33.33%;}
+            .col-5 {width: 41.66%;}
+            .col-6 {width: 50%;}
+            .col-7 {width: 58.33%;}
+            .col-8 {width: 66.66%;}
+            .col-9 {width: 75%;}
+            .col-10 {width: 83.33%;}
+            .col-11 {width: 91.66%;}
+            .col-12 {width: 100%;}
+        }
+    </style>
+    <style>
+        @import 'https://fonts.googleapis.com/css?family=Open+Sans';
+        @import 'https://fonts.googleapis.com/css?family=Pacifico';
+
+        /** {*/
+        /*border: 1px dashed #000;*/
+        /*}*/
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            position: relative;
+        }
+
+        #site-header {
+            padding: 20px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            background-color: #4d6a78;
+            color: white;
+        }
+
+        .header-title {
+            color: white;
+        }
+
+        /*.header-menu {*/
+            /*position: absolute;*/
+            /*top: 0;*/
+            /*right: 0;*/
+        /*}*/
+
+        /* header menu */
+
+        header .header-menu {
+            position: absolute;
+            right: 10px;
+            top: 30%;
+            display: inline-block;
+            margin-right: 30px;
+        }
+
+        header .header-menu ul li {
+            display: inline-block;
+        }
+
+        header .header-menu ul li a {
+            padding: 5px 10px;
+            margin-right: 10px;
+            border-radius: 5px;
+            background-color: #bdc3c7;
+            border: 1px solid #979C9F;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,.8);
+            transition: color 200ms ease;
+            text-decoration: none;
+        }
+
+        header .header-menu ul li a:hover {
+            color: #ddd;
+        }
+
+
+        .landing-body {
+            width: 100%;
+            background-color: black;
+            height: 500px;
+            display: block;
+
+        }
+
+        .landing-body img {
+            width: 100%;
+
+            background-size: cover;
+            filter: blur(3px);
+        }
+
+
+
+        .landing-body {
+            position: relative;
+            background-size: cover;
+        }
+
+        .landing-title {
+            position: absolute;
+            left: 50%;
+            top: 30%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 2em;
+        }
+        @media screen and (max-width: 512px) {
+            header  .header-menu {
+                position:relative;
+                margin-top: 40px;
+                margin-right: 0;
+            }
+            .landing-title h1 {
+                font-size: 1em;
+            }
+        }
+
+        .footer {
+            background-color: #87838a;
+            color: white;
+            padding: 20px;
+            padding-top: 50px;
+            padding-bottom: 50px;
+        }
+
+        .footer .row {
+            display: inline-block;
+        }
+        .company-info ul {
+            display: inline-block;
+            list-style: none;
+        }
+
+        .company-info ul li {
+            display: inline-block;
+            margin-right: 20px;
+            /*text-decoration: none;*/
+            /*list-style: none;*/
+
+        }
+
+    </style>
+</head>
+<body>
+<header id="site-header">
+    <h1 class="header-title">Remember It</h1>
+    <p class="header-description">Remember everything.</p>
+    <div class="header-menu">
+        <ul>
+            <li>
+                <a href="/SignIn">Sign in</a>
+            </li>
+            <li>
+                <a href="/SignUp">Sign up</a>
+            </li>
+        </ul>
+    </div>
+</header>
+<div class="landing-body">
+    <img src="/public/resources/img/landing01.jpeg" alt="landing image">
+    <div class="landing-title">
+        <h1>Remeber It</h1>
+    </div>
+</div>
+
+<div class="footer">
+    <div class="row">
+        <!--<div class="medium-4 large-4 columns">-->
+            <!--<p>-->
+                <!--Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis tempus, ligula eu gravida dapibus, ex-->
+                <!--sapien condimentum felis, ac iaculis nisl quam nec neque. Integer imperdiet interdum ligula eget-->
+                <!--tincidunt. Sed feugiat blandit cursus. Curabitur at mauris augue. Morbi bibendum diam dignissim mauris-->
+                <!--posuere, eget venenatis justo fringilla. Phasellus quis nunc malesuada, ultrices odio a, consequat nunc.-->
+                <!--Aliquam risus augue, scelerisque in commodo et, tincidunt in justo.-->
+                <!--Proin augue neque, mollis ac mauris at, aliquam eleifend nunc. Vestibulum ac neque purus. Aliquam-->
+                <!--maximus neque massa, ac convallis odio rutrum at. Vestibulum vulputate quam non ullamcorper vehicula.-->
+                <!--Integer ornare turpis eu egestas sagittis. Nulla sollicitudin ultricies nisl, eu sollicitudin mauris-->
+                <!--fringilla eu. Curabitur pulvinar dignissim efficitur. Quisque nulla ex, ullamcorper quis arcu id, mattis-->
+                <!--scelerisque augue. Integer luctus arcu suscipit nisl congue, in ultricies leo sagittis. Nunc vel turpis-->
+                <!--eros.-->
+            <!--</p>-->
+        <!--</div>-->
+        <div class="medium-8 large-8 columns">
+            <!--<div class="medium-6 large-6 columns">-->
+                <!--<p>-->
+                    <!--Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis tempus, ligula eu gravida dapibus, ex-->
+                    <!--sapien condimentum felis, ac iaculis nisl quam nec neque. Integer imperdiet interdum ligula eget-->
+                    <!--tincidunt. Sed feugiat blandit cursus. Curabitur at mauris augue. Morbi bibendum diam dignissim mauris-->
+                    <!--posuere, eget venenatis justo fringilla. Phasellus quis nunc malesuada, ultrices odio a, consequat nunc.-->
+                    <!--Aliquam risus augue, scelerisque in commodo et, tincidunt in justo.-->
+                    <!--Proin augue neque, mollis ac mauris at, aliquam eleifend nunc. Vestibulum ac neque purus. Aliquam-->
+                    <!--maximus neque massa, ac convallis odio rutrum at. Vestibulum vulputate quam non ullamcorper vehicula.-->
+                    <!--Integer ornare turpis eu egestas sagittis. Nulla sollicitudin ultricies nisl, eu sollicitudin mauris-->
+                    <!--fringilla eu. Curabitur pulvinar dignissim efficitur. Quisque nulla ex, ullamcorper quis arcu id, mattis-->
+                    <!--scelerisque augue. Integer luctus arcu suscipit nisl congue, in ultricies leo sagittis. Nunc vel turpis-->
+                    <!--eros.-->
+                <!--</p>-->
+            <!--</div>-->
+            <div class="medium-6 large-6 columns company-info">
+                <div>
+                    <ul>
+                        <li>
+                            email me
+                        </li>
+                        <li>
+                            contact us
+                        </li>
+                        <li>
+                            troubleshooting
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

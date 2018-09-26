@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>RememberIt</title>
+    <link rel="stylesheet" href="/public/vendors/css/normalize.css">
+    <link rel="stylesheet" href="/public/vendors/css/foundation.css">
+
+    <link rel="stylesheet" href="/public/resources/css/main.css">
+    <script type="application/javascript" src="https://code.jquery.com/jquery-2.2.3.js"></script>
+    <script type="application/javascript" src="/public/script/list.js"></script>
+
+    <style>
+        .card-link{
+            position: absolute;
+            text-align: center;
+            left: 50%;
+            transform: translate(30%, 0);
+            width: 130px;
+            right: 15px;
+            background-color: #8296a7;
+            text-decoration: none;
+            color: #e3e3e3;
+            border-radius: 5px;
+            padding: 5px 0;
+        }
+        .card-link:hover {
+            color: white;
+        }
+    </style>
+    <script>
+
+        function gotoNaverSearch() {
+            var searchItem = $('input[name="item"]').val();
+            console.log("item : "+  searchItem);
+            var url = "http://endic.naver.com/search.nhn?searchOption=all&query=" + searchItem;
+            window.location.href = url;
+        }
+    </script>
+</head>
+<body>
+<div class="wrapper">
+    <div class="container">
+        <div class="form-title">Add Item</div>
+        <!--<form action="/items" method="post">-->
+        <form id="myForm">
+            <div class="form-input">
+                <label>Item
+                    <input id="form_input_item" type="text" name="item" style="text-transform: lowercase">
+                </label>
+            </div>
+            <div class="form-input">
+                <label>Desc
+                    <textarea rows="4" cols="50" name="item_desc"></textarea>
+                </label>
+            </div>
+            <div class="form-input">
+                <a class="card-link" href="#" style="float:left;">Naver Search</a>
+                <button class="submit-button">Add</button>
+            </div>
+
+        </form>
+    </div>
+
+
+</div>
+
+<script>
+    $('.submit-button').click( function(evt) {
+        evt.preventDefault();
+        setState(1);
+        $.ajax({
+            url: '/api/items',
+            type: 'post',
+            dataType: 'json',
+            data: $('form#myForm').serialize(),
+            success: function(data) {
+                console.log('success : ' + data);
+                window.location.href = '/';
+            }
+        });
+    });
+    $(document).on('click', 'a[href="#"]', function(e){
+        e.preventDefault();
+        var searchItem = $('input[name="item"]').val();
+        console.log("item : "+  searchItem);
+        var url = "http://endic.naver.com/search.nhn?searchOption=all&query=" + searchItem;
+        window.location.href = url;
+
+    });
+
+</script>
+
+
+</body>
+</html>

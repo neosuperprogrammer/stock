@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>RememberIt</title>
+    <link rel="stylesheet" href="/public/vendors/css/normalize.css">
+    <link rel="stylesheet" href="/public/vendors/css/foundation.css">
+
+    <link rel="stylesheet" href="/public/resources/css/main.css">
+    <script type="application/javascript" src="https://code.jquery.com/jquery-2.2.3.js"></script>
+
+</head>
+<body>
+<div class="wrapper">
+    <div class="container">
+        <div class="form-title">Selected Item</div>
+        <form action="/items/<%= item.id %>?_method=PUT"  method="post">
+            <div class="form-input">
+                <label>Item
+                    <input type="text" name="item" value="<%= item.item %>">
+                </label>
+            </div>
+            <div class="form-input">
+                <label>Desc
+                    <textarea rows="4" cols="50" name="item_desc"><%= item.item_desc %></textarea>
+                </label>
+            </div>
+            <div class="form-input">
+                <label>Phase
+                    <input type="text" name="remember_state" value="<%= item.remember_state %>">
+                </label>
+            </div>
+            <div class="form-input">
+                <button class="submit-button">Update</button>
+            </div>
+
+        </form>
+    </div>
+
+
+</div>
+
+
+</body>
+</html>
