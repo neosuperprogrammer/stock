@@ -243,7 +243,19 @@ var contents = {
         });
 
     },
-
+    findByPage: function (start, limit, done) {
+        // var queryString = 'select * from company ORDER BY created DESC LIMIT ?, ?';
+        var queryString = 'select * from company LIMIT ?, ?';
+        conn.query(queryString, [start, limit], function (err, result) {
+            if (err) {
+                console.log(err);
+                //req.flash({'error':err.message});
+                done(err);
+            } else {
+                done(err, result);
+            }
+        });
+    },
 
     findById: function (item, done) {
         conn.query('select * from items where id = ?', [item], function (err, result) {

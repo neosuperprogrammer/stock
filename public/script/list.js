@@ -67,7 +67,7 @@ var requestItems = function () {
     var start = itemToRequest;
     // console.log("sortOder : "  + sortOrder);
     // $.getJSON("/api/items/page/" + pageToRequest + "?state=" + itemState + "&sort=" + sortOrder, {}, function (data) {
-    $.getJSON("/api/items/items/" + start + "?count=20&state=" + itemState + "&sort=" + sortOrder, {}, function (data) {
+    $.getJSON("/api/stock/items/" + start + "?count=20&state=" + itemState + "&sort=" + sortOrder, {}, function (data) {
         $('.loading-div').remove();
         console.log(data);
         inRequest = 0;

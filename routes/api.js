@@ -772,57 +772,7 @@ router.get("/items/unjargon/:id", middleware.checkUserItem, function (req, res) 
 
 
 router.get("/stock/test/", function (req, res) {
-    // var state = req.params.state;
-    // var word = req.query.word;
-    // //
-    // console.log("word : " + word);
-    // var email = req.session.user.email;
-    //
-    // var encodedWord = encodeURIComponent(word);
-    //
-    // urlStr = 'http://ac.endic.naver.com/ac?q=' + encodedWord + '&q_enc=utf-8&st=11001&r_format=json&r_enc=utf-8&r_lt=11001&r_unicode=0&r_escape=1';
-    // // urlStr = 'http://ac.endic.naver.com/ac?_callback=' + encodeURIComponent('window.__jindo2_callback.$3308') +'&q=' + encodedWord + '&q_enc=utf-8&st=11001&r_format=json&r_enc=utf-8&r_lt=11001&r_unicode=0&r_escape=1';
-    // console.log(urlStr);
-    // util.requestUrlContents(urlStr, function (data, err) {
-    //     if (err) {
-    //         console.log('error >>> ' + err);
-    //         var result = {
-    //             result: 'fail',
-    //             reason: err
-    //         };
-    //         res.send(result);
-    //     } else {
-    //         // console.log('success ' + data.toString());
-    //         // console.log('==========================');
-    //         var json = JSON.parse(data.toString());
-    //         // console.log('success ' + json.toString());
-    //         // console.log('query : ' + json.query);
-    //         // console.log('type : ' + typeof json.items);
-    //         // console.log('items : ' + json.items[0][0][0]);
-    //         var resultWord = [];
-    //         json.items[0].forEach(function (value) {
-    //             var item = value[0][0];
-    //             var item_desc = value[1][0];
-    //             // console.log(value[0][0]);
-    //             // console.log(value[1][0]);
-    //             // console.log('length : ' + value.length);
-    //             // console.log('==========================');
-    //             resultWord.push({item:item, item_desc:item_desc});
-    //         });
-    //         // console.log(resultWord);
-    //         var result = {
-    //             result: 'success',
-    //             data: resultWord
-    //         };
-    //         // console.log('result ' +  result);
-    //         res.send(result);
-    //     }
-    // });
-    // var email = req.session.user.email;
-    // var item = req.body.item;
-    // var itemDesc = req.body.item_desc;
 
-    // console.log("item : " + item + ", desc : " + itemDesc);
     created = new Date();
     var newItem = {
         type: 'kospi',
@@ -868,13 +818,35 @@ router.get("/stock/test/", function (req, res) {
             res.send(result);
         }
     });
-    // var result = {
-    //     result: 'success',
-    //     data: 'test'
-    // };
-    // console.log('result ' +  result);
-    // res.send(result);
+});
 
+router.get("/stock/items/:start", function (req, res) {
+    var start = parseInt(req.params.start);
+    var countPerPage = parseInt(req.query.count);
+    var state = req.query.state;
+    var sort = req.query.sort;
+
+    console.log("start : " + start);
+    console.log("countPerPage : " + countPerPage);
+    console.log("state : " + state);
+    console.log("sort : " + sort);
+    var email = req.session.user.email;
+
+    Items.findByPage(start, countPerPage, function (err, items) {
+        if (err) {
+            var result = {
+                result: 'fail',
+                reason: err
+            };
+            res.send(result);
+        } else {
+            var result = {
+                result: 'success',
+                items: items
+            };
+            res.send(result);
+        }
+    });
 });
 
 module.exports = router;

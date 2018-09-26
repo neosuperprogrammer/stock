@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>RememberIt</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css"
+          integrity="sha384-3AB7yXWz4OeoZcPbieVW64vVXEwADiYyAEhwilzWsLw+9FgqpyjjStpPnpBO8o8S" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/public/vendors/css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="/public/css/grid.css">
+    <link rel="stylesheet" type="text/css" href="/public/css/card.css">
+    <link rel="stylesheet" type="text/css" href="/public/css/list.css">
+    <script type="application/javascript" src="https://code.jquery.com/jquery-2.2.3.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.3/handlebars.min.js"></script>
+    <script type="application/javascript" src="/public/script/list.js"></script>
+    <script>
+        Handlebars.registerHelper("getDate", function (remembered) {
+            var d = new Date(remembered);
+            // console.dir(remembered);
+            // console.dir(d);
+            // var datestring = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + " " + d.getHours() + ":" + d.getMinutes();
+            // return datestring;
+            var remained = remainedHours(d);
+            var comment = 'You can change state after ' + remained + ' hours';
+            if (remained <= 0 || itemState == 1) {
+                comment = 'You can change state';
+            }
+            return comment;
+        });
+        Handlebars.registerHelper("getStateTitle", function (id) {
+            if (itemState == 1) {
+                return "memorized";
+            } else {
+                return "forgot";
+            }
+        });
+
+        Handlebars.registerHelper("getDescContent", function (content) {
+            var newContent = content.replace("\r\n", "</br>");
+            newContent = newContent.replace("\n\r", "</br>");
+            newContent = newContent.replace("\r", "</br>");
+            newContent = newContent.replace("\n", "</br>");
+            return newContent;
+        });
+    </script>
+    <script id="card-template" type="text/template">
+        <div class="card-container col-3 col-t-4 col-s-6">
+            <button class="card-close-btn" id="{{code}}">X</button>
+            <div class="card">
+                <div class="card-title">
+                    <div class="card-title-jargon" id={{code}}><i class="fab fa-gitkraken"></i></div>
+                    <div class="card-title-content">{{name}}</div>
+                    <div class="card-title-edit" id={{code}}><i class="far fa-edit"></i></div>
+                </div>
+                <div class="card-desc">
+                    <div class="card-desc-content">{{current}}원</div>
+                    <!--<div class="card-desc-block">-->
+                        <!--<p>Tap to see answer.</p>-->
+                    <!--</div>-->
+                </div>
+                <div class="card-bottom-content">
+                    <div class="card-created">
+                        {{getDate remembered}}
+                    </div>
+                    <div class="card-state-div">
+                        <div class="card-state-inner-div">
+                            <div class="card-state">
+                                state : {{remember_state}}
+                            </div>
+                            <div class="card-forget-check-div">
+                                <div class="card-forget-check-text">forgot</div>
+                                <input id={{code}} class="card-forget-check-box" type="checkbox">
+                            </div>
+                            <div class="card-remember-check-div">
+                                <div class="card-remember-check-text">remembered</div>
+                                <input id={{code}} class="card-remember-check-box" type="checkbox">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-link">
+                <a href="https://finance.naver.com/item/main.nhn?code={{code}}" style="float:left;">Naver</a>
+                <!--<a href="http://endic.naver.com/search.nhn?searchOption=all&query={{item}}" style="float:left;">Naver</a>-->
+                <a href="https://translate.google.co.kr/#en/ko/{{item}}" style="float:right;">Google</a>
+            </div>
+        </div>
+    </script>
+
+
+    <script>
+        $("document").ready(function () {
+            $(".dropbtn").click(function(evt){
+                $('.dropdown-content').toggle('show');
+
+            });
+            $('.dropdown-menu1').on("click",function(){
+                // var usersid =  $(this).attr("id");
+                $('.dropdown-content').toggle('show');
+                //post code
+                updateContent(1);
+            });
+            $('.dropdown-menu2').on("click",function(){
+                // var usersid =  $(this).attr("id");
+                $('.dropdown-content').toggle('show');
+                //post code
+                updateContent(2);
+            });
+            $('.dropdown-menu3').on("click",function(){
+                // var usersid =  $(this).attr("id");
+                $('.dropdown-content').toggle('show');
+                //post code
+                updateContent(3);
+            });
+            $('.dropdown-menu4').on("click",function(){
+                // var usersid =  $(this).attr("id");
+                $('.dropdown-content').toggle('show');
+                //post code
+                updateContent(4);
+            });
+            $('.dropdown-menu5').on("click",function(){
+                // var usersid =  $(this).attr("id");
+                $('.dropdown-content').toggle('show');
+                //post code
+                updateContent(5);
+            });
+            $('.dropdown-menu999').on("click",function(){
+                // var usersid =  $(this).attr("id");
+                $('.dropdown-content').toggle('show');
+                //post code
+                updateContent(999);
+            });
+            $('#top-div').click(function (evt) {
+                console.log("top");
+                // $(window).scrollTop(0);
+                $('html, body').animate({ scrollTop: 0 }, 50);
+
+            });
+            $('#main-sort').click(function (evt) {
+                // console.log("sort");
+                evt.preventDefault();
+                var sort = getSort();
+                // console.log("sort : " + sort);
+                if (sort == 0) {
+                    sort = 1;
+                }
+                else {
+                    sort = 0;
+                }
+                setSort(sort);
+                sortOrder = getSort();
+                // setSortOrderTitle();
+                window.location.replace('/');
+
+                return false;
+            });
+            resetVariable();
+            setTitle();
+            sortOrder = getSort();
+            setSortOrderTitle();
+            console.log('document ready request');
+            requestItems();
+        });
+    </script>
+
+    <script>
+        $(window).scroll(function () {
+            // if ($(window).scrollTop() > $(document).height() - $(window).height() - 50) {
+            //     requestItems();
+            // }
+            if ($(window).scrollTop() > $(document).height() - $(window).height() - 300) {
+                console.log('scroll request');
+                requestItems();
+            }
+        });
+    </script>
+    <script>
+        // function gotoHome() {
+        //     setState(1);
+        //     window.location.replace("/");
+        // }
+        $(document).on('click', 'a[href="#home"]', function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            setState(1);
+            window.location.replace('/');
+
+        });
+        $(document).on('click', 'a[href="#refresh"]', function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            // setState(1);
+            window.location.replace('/');
+        });
+
+        $(document).on('click', 'a[href="#logout"]', function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            setState(1);
+            $.getJSON("/api/logout", {}, function (data) {
+                window.location.replace('/');
+            });
+        });
+
+        function checkReload() {
+            console.log('check reload');
+            if (getDirty() == 1) {
+                console.log('>>>>>>>>>>>>>>> dirty : ' + new Date());
+                setDirty(0);
+                updateContent(1);
+                // setState(1);
+                // window.location.replace('/');
+            }
+        }
+    </script>
+
+</head>
+<body onload="checkReload();">
+<div id="wrapper">
+    <div class="nav">
+        <ul class="nav-ul">
+            <li><a href="#home">&Xi; HOME</a></li>
+            <li>
+                <div class="dropdown">
+                    <button class="dropbtn">Stage
+                        <i class="fa fa-caret-down"></i>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="#" class="dropdown-menu1">Newly Added</a>
+                        <a href="#" class="dropdown-menu2">1'st Turn</a>
+                        <a href="#" class="dropdown-menu3">2'nd Turn</a>
+                        <a href="#" class="dropdown-menu4">3'rd Turn</a>
+                        <a href="#" class="dropdown-menu5">Long-Term Memory</a>
+                        <a href="#" class="dropdown-menu999">Jargonal</a>
+                    </div>
+                </div>
+
+            </li>
+            <li style="float: right;"><a href="/Setting"><i class="far fa-sun"></i></a></li>
+            <!--<li style="float: right;"><a href="#logout"><i class="fas fa-sign-out-alt"></i></a></li>-->
+            <li style="float: right;"><a href="/items/new"><i class="fas fa-pencil-alt"></i></a></li>
+            <li style="float: right;"><a href="#refresh"><i class="fas fa-sync"></i></a></li>
+        </ul>
+    </div>
+
+    <div id="main-content" style="overflow: hidden;">
+        <h1 id="main-title" style="text-align: center; color: #75b185">
+            <!--<script>getTitle()</script>-->
+        </h1>
+        <div id="main-sort">test</div>
+        <!--<button id="update-content-button" onclick="updateContent()">-->
+            <!--<script>getUpdateTitle()</script>-->
+        <!--</button>-->
+
+        <div id="content" style="display: block;float: left;width: 100%">
+        </div>
+    </div>
+    <div id="top-div">
+        TOP
+    </div>
+</div>
+</body>
+</html>

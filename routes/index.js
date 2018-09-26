@@ -10,7 +10,7 @@ router.get("/", function(req, res){
     console.log('landing');
     if (req.session.user) {
         console.log('user : ' + req.session.user);
-        res.redirect("/test");
+        res.redirect("/company");
     } else {
         res.render("landing");
     }
@@ -104,6 +104,13 @@ router.get("/Setting", function(req, res){
 router.get("/test", function(req, res){
     console.log('test');
     res.sendFile('public/html/button_test.html', {root: '.'});
+
+});
+
+
+router.get("/company", function(req, res){
+    console.log('test');
+    res.sendFile('public/html/items/company.html', {root: '.'});
 
 });
 
