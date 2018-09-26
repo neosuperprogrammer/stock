@@ -9,8 +9,8 @@ var hasher = bkfd2Password();
 router.get("/", function(req, res){
     console.log('landing');
     if (req.session.user) {
-        console.log(req.session.user);
-        res.redirect("/items");
+        console.log('user : ' + req.session.user);
+        res.redirect("/test");
     } else {
         res.render("landing");
     }
@@ -98,6 +98,12 @@ router.get('/LogOut',function(req,res){
 router.get("/Setting", function(req, res){
     console.log('Setting');
     res.sendFile('public/html/setting.html', {root: '.'});
+
+});
+
+router.get("/test", function(req, res){
+    console.log('test');
+    res.sendFile('public/html/button_test.html', {root: '.'});
 
 });
 

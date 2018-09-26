@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>RememberIt</title>
+    <link rel="stylesheet" href="normalize.css">
+    <style>
+        . {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        [class*="col-"] {
+            width: 100%;
+            float: left;
+            padding: 0px;
+        }
+        @media only screen and (min-width: 600px) {
+            /* For tablets: */
+            .col-s-1 {width: 8.33%;}
+            .col-s-2 {width: 16.66%;}
+            .col-s-3 {width: 25%;}
+            .col-s-4 {width: 33.33%;}
+            .col-s-5 {width: 41.66%;}
+            .col-s-6 {width: 50%;}
+            .col-s-7 {width: 58.33%;}
+            .col-s-8 {width: 66.66%;}
+            .col-s-9 {width: 75%;}
+            .col-s-10 {width: 83.33%;}
+            .col-s-11 {width: 91.66%;}
+            .col-s-12 {width: 100%;}
+        }
+        @media only screen and (min-width: 768px) {
+            /* For desktop: */
+            .col-1 {width: 8.33%;}
+            .col-2 {width: 16.66%;}
+            .col-3 {width: 25%;}
+            .col-4 {width: 33.33%;}
+            .col-5 {width: 41.66%;}
+            .col-6 {width: 50%;}
+            .col-7 {width: 58.33%;}
+            .col-8 {width: 66.66%;}
+            .col-9 {width: 75%;}
+            .col-10 {width: 83.33%;}
+            .col-11 {width: 91.66%;}
+            .col-12 {width: 100%;}
+        }
+    </style>
+    <style>
+        .card-container {
+            box-sizing: border-box;
+            height: 320px;
+            padding: 0;
+            position: relative;
+            /*background-color: yellow;*/
+        }
+
+        .card-close-btn {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            background-color: Transparent;
+            background-repeat: no-repeat;
+            border: none;
+            cursor: pointer;
+            overflow: hidden;
+            outline: none;
+        }
+
+        .card-link {
+            position: absolute;
+            /*background-color: #3adb76;*/
+            right: 20px;
+            bottom: 0px;
+        }
+        .card-link a {
+            text-decoration: none;
+        }
+
+        .card {
+            border: 1px solid #73AD21;
+            border-radius: 25px;
+            padding: 0;
+            margin: 20px;
+            overflow: hidden;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .card-title {
+            display: block;
+            position: relative;
+            width: 100%;
+            height: 15%;
+            background-color: #73AD21;
+            font-size: 17px;
+            color: white;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .card-title-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+
+            transform: translate(-50%, -50%);
+        }
+
+        .card-check-box {
+            position: absolute;
+            right:20px;
+            top : 10px;
+
+        }
+
+        .card-desc {
+            display: block;
+            position: relative;
+            background-color: #ffffff;
+            height: 60%;
+            width: 100%;
+            color: #87838a;
+        }
+
+        .card-desc-content {
+            padding: 10px;
+        }
+
+        .card-bottom-content {
+            position: relative;
+            bottom: 0;
+            height: 25%;
+            width: 100%;
+            background-color: #cccfcf;
+        }
+
+        .card-created {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+        }
+
+        .card-state-div {
+            position: absolute;
+            left:10px;
+            right:10px;
+            bottom: 0px;
+            height:60%;
+        }
+
+        .card-state-inner-div {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            /*background-color: #3adb76;*/
+        }
+
+        .card-state {
+            position: absolute;
+            left: 0px;
+            top: 10px;
+            /*background-color: #693fdb;*/
+        }
+
+        .card-check-div {
+            position: absolute;
+            right: 0px;
+            top: 10px;
+            width: 40%;
+            /*background-color: #693fdb;*/
+        }
+        .card-check-text {
+            /*background-color: #db2d33;*/
+            display: block;
+            position: absolute;
+            right: 20px;
+            top: 0px;
+
+        }
+        .card-check-box {
+            display: block;
+            position: absolute;
+            right: 0px;
+            bottom: 0px;
+            background-color: #d4db1f;
+            transform: translate(-10%, -60%);
+
+        }
+
+    </style>
+    <script type="application/javascript" src="https://code.jquery.com/jquery-2.2.3.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.3/handlebars.min.js"></script>
+    <script id="card-template" type="text/template">
+        <div class="card-container col-3 col-s-6">
+            <button class="card-close-btn">X</button>
+            <div class="card">
+                <div class="card-title">
+                    <div class="card-title-content">Title</div>
+                </div>
+
+                <div class="card-desc">
+                    <div class="card-desc-content">
+                        Lorem Ipsum
+                    </div>
+
+                </div>
+
+                <div class="card-bottom-content">
+                    <div class="card-created">
+                        date : 2018-03-20
+                    </div>
+
+                    <div class="card-state-div">
+                        <div class="card-state-inner-div">
+                            <div class="card-state">
+                                state : 1
+                            </div>
+
+                            <div class="card-check-div">
+                                <div class="card-check-text">memorized</div>
+                                <input class="card-check-box" type="checkbox">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-link">
+                <a href="http://endic.naver.com/search.nhn?sLn=kr&searchOption=all&query={{item}}">Naver</a>
+                <a href="https://translate.google.co.kr/#en/ko/{{item}}">Google</a>
+
+            </div>
+        </div>
+    </script>
+    <script>
+        $("document").ready(function () {
+
+            // var raw_template = $('#card-template').html();
+            // // Complile that into an handlebars template
+            // var template = Handlebars.compile(raw_template);
+            // // Retrieve the placeHolder where the posts will be displayed
+            // var placeHolder = $('#content');
+            // for (i = 0; i < 30; i++) {
+            //     var html = template();
+            //     placeHolder.append(html);
+            // }
+        });
+
+    </script>
+</head>
+<body>
+    <style>
+
+    </style>
+
+<div id="content">
+    <div class="test-button col-1" style="background-color: red;" >
+        test
+    </div>
+
+</div>
+    <script>
+        $('.test-button').click( function(evt) {
+            console.log('clicked');
+            evt.preventDefault();
+            $.ajax({
+                url: '/api/stock/test/',
+                type: 'get',
+                dataType: 'json',
+                success: function(data) {
+                    console.log('success : ' + data);
+                    // window.history.go(-2);
+                    // window.location.reload(history.back());
+                    // window.location.replace('/');
+                    // window.location.href = document.referrer;
+                    // window.location.replace(document.referrer)
+                    // window.location.replace("/items");
+                    // setDirty(1);
+                    // window.history.back();
+
+                    // window.location.replace('/');
+
+//                 GoBackWithRefresh();
+//                 location.href = document.referrer
+                }
+            });
+        });
+    </script>
+</body>
+</html>

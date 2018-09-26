@@ -167,7 +167,7 @@ var contents = {
         });
     },
     create: function (newItem, done) {
-        conn.query('insert into items set ?', newItem, function (err, result) {
+        conn.query('insert into company set ?', newItem, function (err, result) {
             if (err) {
                 console.log(err);
                 done(err);
