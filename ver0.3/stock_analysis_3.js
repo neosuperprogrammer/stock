@@ -58,14 +58,28 @@ var stock_recorder = require('./stock_recorder');
   }
 
   function initialize() {
-    return db.buildModel();
+      return new Promise(function (resolve, reject) {
+          resolve();
+      });
+
+      // return db.buildModel();
   }
 
   function getCompanyListFromDB(collection) {
-    return db.openDB(collection)
-      .then(function (dbConnection) {
-        return db.getCompanyList();
+      return new Promise(function (resolve, reject) {
+          Items.findByType(type, function (err, result) {
+              if (err) {
+                  reject(err);
+              } else {
+                  resolve(result);
+              }
+          });
       });
+
+    // return db.openDB(collection)
+    //   .then(function (dbConnection) {
+    //     return db.getCompanyList();
+    //   });
   }
 
   function getKospiList() {

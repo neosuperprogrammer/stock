@@ -10,6 +10,7 @@ var Promise = require('bluebird');
 var stock_request = require('./stock_request');
 var common = require('./stock_common');
 var db = require('./stock_db');
+var Items       = require("../model/items");
 
 (function () {
 
@@ -79,7 +80,7 @@ var db = require('./stock_db');
             .then(function (f) {
                 //console.log('found : ' + f);
                 found = f;
-                return common.waitFor(1000);
+                return common.waitFor(100);
                 //return found;
                 //return waitFor(100);
             })
@@ -92,8 +93,8 @@ var db = require('./stock_db');
     }
 
     function searchWriters(companyList) {
-        //var subCompanyList = companyList.slice(0, 0 + 1);
-        var subCompanyList = companyList.slice();
+        var subCompanyList = companyList.slice(0, 0 + 10);
+        // var subCompanyList = companyList.slice();
 
         var i = 0;
         var sequence = Promise.resolve();
@@ -133,11 +134,11 @@ var db = require('./stock_db');
                 //})
                 .then(function (found) {
                     if (found === 1) {
-                        //console.log('found : ' + companyInfo.name);
+                        console.log('found : ' + companyInfo.name);
                         foundedCompanies.push(companyInfo);
                     }
                     else {
-                        //console.log('not found [' + writers + ']');
+                        console.log('not found [' + writers + ']');
                     }
                     return common.waitFor(100);
                 })
@@ -164,14 +165,28 @@ var db = require('./stock_db');
     }
 
     function initialize() {
-        return db.buildModel();
+        return new Promise(function (resolve, reject) {
+            resolve();
+        });
+
+        // return db.buildModel();
     }
 
-    function getCompanyListFromDB(collection) {
-        return db.openDB(collection)
-            .then(function (dbConnection) {
-                return db.getCompanyList();
+    function getCompanyListFromDB(type) {
+        return new Promise(function (resolve, reject) {
+            Items.findByType(type, function (err, result) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
             });
+        });
+
+        // return db.openDB(collection)
+        //     .then(function (dbConnection) {
+        //         return db.getCompanyList();
+        //     });
     }
 
     function getKospiList() {
@@ -188,7 +203,7 @@ var db = require('./stock_db');
     }
 
     initialize()
-        //.then(getKospiList)
+        .then(getKospiList)
         //.then(searchWriters)
         //.then(function(foundedCompanies) {
         //    foundedCompanies.forEach(function(companyInfo) {
@@ -196,14 +211,14 @@ var db = require('./stock_db');
         //    });
         //})
         //.then(closeDB)
-        .then(getKosdaqList)
+        // .then(getKosdaqList)
         .then(searchWriters)
         .then(function(foundedCompanies) {
             foundedCompanies.forEach(function(companyInfo) {
                 common.logCompany(companyInfo);
             });
         })
-        .then(closeDB)
+        // .then(closeDB)
         .catch(function (err) {
             console.log(err);
         });
