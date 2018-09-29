@@ -17,7 +17,7 @@ module.exports = {
   },
 
   logCompany: function (companyInfo) {
-
+    // console.log('log company');
     var cashflowUri = 'http://media.kisline.com/fininfo/mainFininfo.nice?paper_stock='
       + companyInfo.code + '&nav=4';
     var cashFlowPerStock = (companyInfo.scf / companyInfo.ls) * 1000 * 10;
@@ -28,13 +28,13 @@ module.exports = {
     var domesticInv = 0;
     var foreignInv = 0;
 
-    _.forEach(companyInfo.di, function (data) {
-      domesticInv += data.amount;
-    });
-
-    _.forEach(companyInfo.fi, function (data) {
-      foreignInv += data.amount;
-    });
+    // _.forEach(companyInfo.di, function (data) {
+    //   domesticInv += data.amount;
+    // });
+    //
+    // _.forEach(companyInfo.fi, function (data) {
+    //   foreignInv += data.amount;
+    // });
 
     console.log('type : ' + companyInfo.type + '\n'
       + 'chart : http://finance.naver.com/item/fchart.nhn?code=' + companyInfo.code + '\n'
@@ -53,10 +53,10 @@ module.exports = {
       + 'pbr : ' + companyInfo.pbr + '\n'
       + 'debt : ' + companyInfo.debt + '\n'
       + 'scf : ' + companyInfo.scf + '\n'
-      + 'foreign_inv : ' + foreignInv + '\n'
-      + 'domestic_inv : ' + domesticInv + '\n'
-      + 'inv_ratio : ' + this.getInvestigationRatio(companyInfo) + '\n'
-      + 'inv_amount : ' + this.getInvestigationAmount(companyInfo) + '\n'
+      // + 'foreign_inv : ' + foreignInv + '\n'
+      // + 'domestic_inv : ' + domesticInv + '\n'
+      // + 'inv_ratio : ' + this.getInvestigationRatio(companyInfo) + '\n'
+      // + 'inv_amount : ' + this.getInvestigationAmount(companyInfo) + '\n'
     );
   },
 

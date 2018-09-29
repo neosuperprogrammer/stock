@@ -243,6 +243,35 @@ var contents = {
         });
 
     },
+
+    findByType: function (type, done) {
+        conn.query('select * from company where type = ?', [type], function (err, result) {
+            if (err) {
+                console.log(err);
+                //req.flash({'error':err.message});
+                done(err);
+            } else {
+                done(err, result);
+            }
+        });
+    },
+
+
+    updateCompanyInfo: function (companyInfo, done) {
+        conn.query('UPDATE company SET current = ?, mc = ?, ls = ?, per = ?, eps = ?, bps = ?, pbr = ?, debt = ?, scf = ? WHERE id = ?',
+            [companyInfo.current, companyInfo.mc, companyInfo.ls, companyInfo.per, companyInfo.eps, companyInfo.bps, companyInfo.pbr, companyInfo.debt, companyInfo.scf, companyInfo.id], function (err, results) {
+                if (err) {
+                    console.log(err);
+                    done(err);
+                } else {
+
+                    // console.log(">>>>>>>>>>>>>>>>>>>> " + results.constructor);
+                    done(null, results);
+                }
+            });
+
+    },
+
     findByPage: function (start, limit, done) {
         // var queryString = 'select * from company ORDER BY created DESC LIMIT ?, ?';
         var queryString = 'select * from company LIMIT ?, ?';

@@ -17,6 +17,7 @@ var mongoose = require('mongoose');
 var stock_request = require('./stock_request');
 var common = require('./stock_common');
 var db = require('./stock_db');
+var Items       = require("../model/items");
 
 (function () {
 
@@ -127,7 +128,11 @@ var db = require('./stock_db');
       })
       .then(function (bps) {
         console.log('bps : ' + bps);
-        companyInfo.bps = bps;
+          if (isNaN(bps)) {
+              bps = -1;
+          }
+
+          companyInfo.bps = bps;
         return companyInfo;
       })
       .then(function (companyInfo) {
@@ -138,6 +143,9 @@ var db = require('./stock_db');
           pbr = 0;
         }
         console.log('pbr : ' + pbr);
+          if (isNaN(pbr)) {
+              pbr = -1;
+          }
 
         companyInfo.pbr = pbr;
         return companyInfo;
@@ -147,12 +155,15 @@ var db = require('./stock_db');
       })
       .then(function (debt) {
         console.log('debt : ' + debt);
+        if (isNaN(debt)) {
+            debt = -1;
+        }
         companyInfo.debt = debt;
         return companyInfo;
       })
       .then(function (companyInfo) {
-        common.logCompany(companyInfo);
-        return common.waitFor(1000);
+        // common.logCompany(companyInfo);
+        return common.waitFor(100);
       })
       .catch(function (err) {
         console.log(err);
@@ -160,7 +171,7 @@ var db = require('./stock_db');
   }
 
   function getCompanyInfos(companyList) {
-    //var subCompanyList = companyList.slice(0, 0 + 1);
+    // var subCompanyList = companyList.slice(0, 0 + 50);
     var subCompanyList = companyList.slice();
 
     var sequence = Promise.resolve();
@@ -179,24 +190,51 @@ var db = require('./stock_db');
   }
 
   function updateCompanyInfos(companyList) {
-    return Promise.all(companyList).each(function (companyInfo) {
-        //console.log(companyInfo);
-        return db.updateCompanyInfo(companyInfo);
-      })
-      .then(function () {
-        return closeDB();
+      return Promise.all(companyList).each(function (companyInfo) {
+          return new Promise(function (resolve, reject) {
+              Items.updateCompanyInfo(companyInfo, function (err, result) {
+                  if (err) {
+                      reject(err);
+                  } else {
+                      resolve(result);
+                  }
+              });
+          });
       });
+
+
+    // return Promise.all(companyList).each(function (companyInfo) {
+    //     //console.log(companyInfo);
+    //     return db.updateCompanyInfo(companyInfo);
+    //   })
+    //   .then(function () {
+    //     return closeDB();
+    //   });
   }
 
   function initialize() {
-    return db.buildModel();
+      return new Promise(function (resolve, reject) {
+          resolve();
+      });
+
+      // return db.buildModel();
   }
 
-  function getCompanyListFromDB(collection) {
-    return db.openDB(collection)
-      .then(function (dbConnection) {
-        return db.getCompanyList();
+  function getCompanyListFromDB(type) {
+      return new Promise(function (resolve, reject) {
+          Items.findByType(type, function (err, result) {
+              if (err) {
+                  reject(err);
+              } else {
+                  resolve(result);
+              }
+          });
       });
+
+      // return db.openDB(collection)
+      // .then(function (dbConnection) {
+      //   return db.getCompanyList();
+      // });
   }
 
   function getKospiList() {

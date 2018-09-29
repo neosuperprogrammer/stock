@@ -285,8 +285,11 @@ var Items       = require("../model/items");
     }
 
     function initialize() {
+        return new Promise(function (resoleve, reject) {
+            resoleve();
+        });
         //return db.initialize();
-        return db.buildModel();
+        // return db.buildModel();
     }
 
     initialize()

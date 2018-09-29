@@ -10,6 +10,7 @@ var iconv = require('iconv-lite');
 var stock_request = require('./stock_request');
 var common = require('./stock_common');
 var db = require('./stock_db');
+var Items       = require("../model/items");
 
 (function () {
 
@@ -211,30 +212,56 @@ var db = require('./stock_db');
   }
 
   function updateCompanyInfos(companyList) {
-    var sequence = Promise.resolve();
-
-    companyList.forEach(function (companyInfo) {
-      sequence = sequence
-        .then(function () {
-          return db.updateCompanyInfo(companyInfo);
-        })
-    });
-
-    return sequence
-      .then(function () {
-        return closeDB();
+      return Promise.all(companyList).each(function (companyInfo) {
+          return new Promise(function (resolve, reject) {
+              Items.updateCompanyInfo(companyInfo, function (err, result) {
+                  if (err) {
+                      reject(err);
+                  } else {
+                      resolve(result);
+                  }
+              });
+          });
       });
+
+    //   var sequence = Promise.resolve();
+    //
+    // companyList.forEach(function (companyInfo) {
+    //   sequence = sequence
+    //     .then(function () {
+    //       return db.updateCompanyInfo(companyInfo);
+    //     })
+    // });
+    //
+    // return sequence
+    //   .then(function () {
+    //     return closeDB();
+    //   });
   }
 
   function initialize() {
-    return db.buildModel();
+      return new Promise(function (resolve, reject) {
+          resolve();
+      });
+
+      // return db.buildModel();
   }
 
-  function getCompanyListFromDB(collection) {
-    return db.openDB(collection)
-      .then(function (dbConnection) {
-        return db.getCompanyList();
+  function getCompanyListFromDB(type) {
+      return new Promise(function (resolve, reject) {
+          Items.findByType(type, function (err, result) {
+              if (err) {
+                  reject(err);
+              } else {
+                  resolve(result);
+              }
+          });
       });
+
+      // return db.openDB(collection)
+      // .then(function (dbConnection) {
+      //   return db.getCompanyList();
+      // });
   }
 
   function getKospiList() {

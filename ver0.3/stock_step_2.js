@@ -15,6 +15,8 @@ var mongoose = require('mongoose');
 var stock_request = require('./stock_request');
 var common = require('./stock_common');
 var db = require('./stock_db');
+var Items       = require("../model/items");
+
 
 (function () {
 
@@ -30,10 +32,10 @@ var db = require('./stock_db');
   function getMarketCapitalization(loaded) {
     var list = loaded('td > span#MData\\[62\\]lastTick\\[6\\]');
     var totalString = list[0].children[0].children[0].data;
-    //console.log(totalString);
+    // console.log(totalString);
     var total = parseFloat(totalString.replace(/,/g, ''));
     //total = total * 1000000;
-    //console.log(total);
+    // console.log(total);
     return total;
   }
 
@@ -135,7 +137,7 @@ var db = require('./stock_db');
         return getPER(contents);
       })
       .then(function (per) {
-        //console.log('per : ' + per);
+        // console.log('per : ' + per);
         companyInfo.per = per;
         return companyInfo;
       })
@@ -143,14 +145,15 @@ var db = require('./stock_db');
         return getEPS(contents);
       })
       .then(function (eps) {
-        //console.log('eps : ' + eps);
+        // console.log('eps : ' + eps);
         companyInfo.eps = eps;
         return companyInfo;
       })
       .then(function () {
-        common.logCompany(companyInfo);
+        // console.log('end' + companyInfo);
+        // common.logCompany(companyInfo);
         //return checkCompanyInfo(companyInfo);
-        return common.waitFor(1000);
+        return common.waitFor(100);
       })
       .catch(function (err) {
         console.log(err);
@@ -158,7 +161,14 @@ var db = require('./stock_db');
   }
 
   function getCompanyInfos(companyList) {
-
+    // console.log('**** company list : ' + companyList.type);
+    //   var subCompanyList = companyList.slice();
+    //
+    //   subCompanyList.forEach(function (companyInfo) {
+    //       console.log(companyInfo);
+    //   });
+    //
+    //   return;
     //var subCompanyList = companyList.slice();
     //
     //var arrayOfPromises = subCompanyList.map(function (companyInfo) {
@@ -170,7 +180,7 @@ var db = require('./stock_db');
     //        return subCompanyList;
     //    });
 
-    //var subCompanyList = companyList.slice(0, 0 + 2);
+    // var subCompanyList = companyList.slice(0, 0 + 1);
     var subCompanyList = companyList.slice();
 
     var sequence = Promise.resolve();
@@ -264,7 +274,30 @@ var db = require('./stock_db');
   }
 
   function updateCompanyInfos(companyList) {
-    return Promise.all(companyList).each(function (companyInfo) {
+      // var subCompanyList = companyList.slice();
+      //
+      // subCompanyList.forEach(function (companyInfo) {
+      //     console.log(companyInfo);
+      // });
+
+      return Promise.all(companyList).each(function (companyInfo) {
+          return new Promise(function (resolve, reject) {
+              Items.updateCompanyInfo(companyInfo, function (err, result) {
+                  if (err) {
+                      reject(err);
+                  } else {
+                      resolve(result);
+                  }
+              });
+          });
+      });
+      // .then(function () {
+      //     return closeDB();
+      // });
+
+
+
+      return Promise.all(companyList).each(function (companyInfo) {
         //console.log(companyInfo);
         return db.updateCompanyInfo(companyInfo);
       })
@@ -274,14 +307,28 @@ var db = require('./stock_db');
   }
 
   function initialize() {
-    return db.buildModel();
+    return new Promise(function (resolve, reject) {
+        resolve();
+    });
+    // return db.buildModel();
   }
 
-  function getCompanyListFromDB(collection) {
-    return db.openDB(collection)
-      .then(function (dbConnection) {
-        return db.getCompanyList();
+  function getCompanyListFromDB(type) {
+      return new Promise(function (resolve, reject) {
+        Items.findByType(type, function (err, result) {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+        });
       });
+
+
+    // return db.openDB(collection)
+    //   .then(function (dbConnection) {
+    //     return db.getCompanyList();
+    //   });
   }
 
   function getKospiList() {
@@ -305,7 +352,7 @@ var db = require('./stock_db');
     //.then(getCompanyInfos)
     //.then(updateCompanyInfos)
     .catch(function (err) {
-      console.log(err);
+      // console.log(err);
     });
 })();
 
