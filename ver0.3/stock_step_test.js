@@ -113,7 +113,7 @@ var Promise = require('bluebird');
       }
       if (found !== 1) {
         //console.log('push');
-        original.push({'date': updateData.date, 'amount': updateData.amount, 'new': true});
+        original.push({'date': updateData.date, 'amount': updateData.amount});
       }
     }
 
@@ -169,7 +169,6 @@ var Promise = require('bluebird');
         //   console.log('foreignInv : ' + foreignInv);
 
         companyInfo.fi = updateInvestication(companyInfo.fi, foreignInv);
-        // console.log('fi count : ' + companyInfo.fi.length);
         return companyInfo;
         //return waitFor(100);
       })
@@ -180,12 +179,11 @@ var Promise = require('bluebird');
         //console.log('eps : ' + eps);
         //companyInfo.eps = eps;
         companyInfo.di = updateInvestication(companyInfo.di, domesticInv);
-          // console.log('di count : ' + companyInfo.di.length);
         return companyInfo;
         //return waitFor(100);
       })
       .then(function (companyInfo) {
-        // common.logCompany(companyInfo);
+        common.logCompany(companyInfo);
         return common.waitFor(100);
       })
       .catch(function (err) {
@@ -194,7 +192,7 @@ var Promise = require('bluebird');
   }
 
   function getCompanyInfos(companyList) {
-    var subCompanyList = companyList.slice(0, 0 + 1);
+    var subCompanyList = companyList.slice(0, 0 + 2);
     // var subCompanyList = companyList.slice();
 
     var sequence = Promise.resolve();
@@ -285,8 +283,8 @@ var Promise = require('bluebird');
   initialize()
     .then(getKospiList)
     //.then(getKosdaqList)
-    .then(getCompanyInfos)
-    .then(updateCompanyInfos)
+    // .then(getCompanyInfos)
+    // .then(updateCompanyInfos)
     .catch(function (err) {
       console.log(err);
     });

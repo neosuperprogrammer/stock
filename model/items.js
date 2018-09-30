@@ -1,6 +1,6 @@
 
 var mysql = require('mysql');
-
+var Promise = require('bluebird');
 /*
 
 mysql> create database stock;
@@ -42,6 +42,24 @@ mysql> create table if not exists users (
             created timestamp DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY(id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+    mysql> create table if not exists fi (
+            id INT NOT NULL AUTO_INCREMENT,
+            code varchar(64) NOT NULL,
+            amount INT default 0,
+            date timestamp DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY(id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+    mysql> create table if not exists di (
+            id INT NOT NULL AUTO_INCREMENT,
+            code varchar(64) NOT NULL,
+            amount INT default 0,
+            date timestamp DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY(id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 mysql> create table if not exists items (
   id INT NOT NULL AUTO_INCREMENT,
@@ -244,29 +262,230 @@ var contents = {
 
     },
 
+    getFiInfo: function(code, done) {
+        conn.query('select * from fi where code = ?', [code], function (err, result) {
+            if (err) {
+                console.log(err);
+                done(err);
+            } else {
+                done(null, result)
+            }
+        });
+    },
+
+    getAllFiInfo: function(companyList) {
+        var theThis = this;
+
+        return Promise.all(companyList).each(function (companyInfo) {
+            return new Promise(function (resolve, reject) {
+                // console.log('update');
+                theThis.getFiInfo(companyInfo.code, function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        companyInfo.fi = [];
+                        resolve(companyInfo);
+                    } else {
+                        result.forEach(function (fi) {
+                            fi.code = companyInfo.code;
+                            fi.new = false;
+                        });
+                        companyInfo.fi = result;
+                        resolve(companyList);
+                    }
+                });
+            });
+        });
+    },
+
+    getDiInfo: function(code, done) {
+        conn.query('select * from di where code = ?', [code], function (err, result) {
+            if (err) {
+                console.log(err);
+                done(err);
+            } else {
+                done(null, result)
+            }
+        });
+    },
+
+    getAllDiInfo: function(companyList) {
+        var theThis = this;
+
+        return Promise.all(companyList).each(function (companyInfo) {
+            return new Promise(function (resolve, reject) {
+                // console.log('update');
+                theThis.getDiInfo(companyInfo.code, function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        companyInfo.di = [];
+                        resolve(companyInfo);
+
+                    } else {
+                        result.forEach(function (di) {
+                            di.new = false;
+                        });
+                        companyInfo.di = result;
+                        resolve(companyInfo);
+                    }
+                });
+            });
+        });
+    },
+
     findByType: function (type, done) {
+        var theThis = this;
         conn.query('select * from company where type = ?', [type], function (err, result) {
             if (err) {
                 console.log(err);
                 //req.flash({'error':err.message});
                 done(err);
             } else {
-                done(err, result);
+                theThis.getAllFiInfo(result)
+                    .then(function (companyList) {
+                        theThis.getAllDiInfo(result)
+                            .then(function (companyList) {
+                                // console.log(companyList);
+                                done(err, result);
+                            });
+
+                    });
             }
         });
     },
 
+    updateDiInfo: function(di, done) {
+
+        var newItem = {
+            code: di.code,
+            amount: di.amount,
+            date: di.date
+        };
+
+        conn.query('insert into di set ?', newItem, function (err, result) {
+            if (err) {
+                console.log(err);
+                done(err);
+            } else {
+                // console.log('success');
+                // console.log(result);
+                done(null, result);
+            }
+        });
+    },
+
+    updateAllDiInfo: function (companyInfo) {
+
+        var newDi = [];
+        companyInfo.di.forEach(function (di) {
+            if (di.new == true) {
+                di.code = companyInfo.code;
+                newDi.push(di);
+            }
+        });
+
+        console.log('new di count : ' + newDi.length);
+
+        var theThis = this;
+        var theCompanyInfo = companyInfo;
+
+        if (newDi.length == 0) {
+            return new Promise(function (resolve, reject) {
+                resolve(companyInfo);
+            });
+        }
+
+        return Promise.all(newDi).each(function (di) {
+            return new Promise(function (resolve, reject) {
+                // console.log('update');
+                theThis.updateDiInfo(di, function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        resolve(theCompanyInfo);
+                    } else {
+                        // console.log('resolve');
+                        resolve(theCompanyInfo);
+                    }
+                });
+            });
+        });
+    },
+
+    updateFiInfo: function(fi, done) {
+        var newItem = {
+            code: fi.code,
+            amount: fi.amount,
+            date: fi.date
+        };
+
+        conn.query('insert into fi set ?', newItem, function (err, result) {
+            if (err) {
+                console.log(err);
+                done(err);
+            } else {
+                // console.log(result);
+                done(null, result);
+            }
+        });
+    },
+
+    updateAllFiInfo: function (companyInfo) {
+
+        var newFi = [];
+
+        // console.log('fi : ' + companyInfo);
+        companyInfo.fi.forEach(function (fi) {
+            if (fi.new == true) {
+                fi.code = companyInfo.code;
+                newFi.push(fi);
+            }
+        });
+
+        console.log('new fi count : ' + newFi.length);
+
+        if (newFi.length == 0) {
+            return new Promise(function (resolve, reject) {
+                resolve(companyInfo);
+            });
+        }
+
+        var theThis = this;
+
+        return Promise.all(newFi).each(function (fi) {
+            return new Promise(function (resolve, reject) {
+                // console.log('update');
+                theThis.updateFiInfo(fi, function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        resolve(companyInfo);
+                    } else {
+                        resolve(companyInfo);
+                    }
+                });
+            });
+        });
+    },
 
     updateCompanyInfo: function (companyInfo, done) {
+        // console.log('updatecompanyinfo');
+        var theThis = this;
+        var theCompanyInfo = companyInfo;
         conn.query('UPDATE company SET current = ?, mc = ?, ls = ?, per = ?, eps = ?, bps = ?, pbr = ?, debt = ?, scf = ? WHERE id = ?',
             [companyInfo.current, companyInfo.mc, companyInfo.ls, companyInfo.per, companyInfo.eps, companyInfo.bps, companyInfo.pbr, companyInfo.debt, companyInfo.scf, companyInfo.id], function (err, results) {
                 if (err) {
                     console.log(err);
                     done(err);
                 } else {
+                    theThis.updateAllDiInfo(theCompanyInfo)
+                        .then(function (companyInfo) {
+                            theThis.updateAllFiInfo(theCompanyInfo)
+                                .then(function (companyInfo) {
+                                    // console.log(">>>>>>>>>>>>>>>>>>>> " + results.constructor);
+                                    done(null, results);
+                                });
 
-                    // console.log(">>>>>>>>>>>>>>>>>>>> " + results.constructor);
-                    done(null, results);
+                            // done(null, results);
+                        });
+                    
                 }
             });
 
